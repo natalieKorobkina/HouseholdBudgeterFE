@@ -1,0 +1,44 @@
+﻿@model List<HouseholdBudgeterFrontEnd.Models.ViewModels.ParticipantViewModel>
+@{
+    ViewBag.Title = "Users of household";
+}
+
+@if (Model != null)
+{
+    <div class="d-flex justify-content-around">
+        <div class="card" style="width:80%">
+            <div class="card-body">
+                <h3>Members of household</h3>
+                <hr />
+                <table id="table_id" class="table-striped table-bordered compact" style="width:100%">
+                    <thead>
+                        <tr>
+                            <th>Id</th>
+                            <th>Email/UserName</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var user in Model)
+                        {
+                            <tr>
+                                <td>@user.Id</td>
+                                <td>@user.UserName</td>
+                            </tr>
+                        }
+                </table>
+            </div>
+        </div>
+    </div>
+}
+
+<div class="container-login100-form-btn m-b-16">
+    @Html.ActionLink("Back to Households", "GetHouseholds", new { }, new { @class = "txt3" })
+</div>
+
+@section scripts {
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $('table.display').DataTable();
+        });
+    </script>
+}
