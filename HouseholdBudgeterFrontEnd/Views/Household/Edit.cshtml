@@ -3,8 +3,15 @@
     ViewBag.Title = "Edit household";
 }
 
-<h2>@ViewBag.Title.</h2>
-
+<h2>@ViewBag.Title</h2>
+@if (ViewBag.Error != null)
+{
+    <div class="card" style="text-align:center">
+        <div class="card-body">
+            <h4 style="color:red">@ViewBag.Error</h4>
+        </div>
+    </div>
+}
 @using (Html.BeginForm("Edit", "Household", FormMethod.Post, new { @class = "form-horizontal", role = "form" }))
 {
     @Html.AntiForgeryToken()

@@ -1,9 +1,20 @@
-﻿@model List<HouseholdBudgeterFrontEnd.Models.Domain.Household>
+﻿@model List<HouseholdBudgeterFrontEnd.Models.ViewModels.HouseholdViewModel>
 @{
     ViewBag.Title = "Your households";
 }
-
 <hr />
+@if (!ViewData.ModelState.IsValid)
+{
+    //ViewData.ModelState
+}
+@if (ViewBag.Error != null)
+{
+    <div class="card" style="text-align:center">
+        <div class="card-body">
+            <h4 style="color:red">@ViewBag.Error</h4>
+        </div>
+    </div>
+}
 <!--Show all households-->
 @if (Model != null || Model.Any())
 {
@@ -16,7 +27,7 @@
                 <th>Created</th>
                 <th>Updated</th>
                 <th>Edit</th>
-                <th>See Users</th>
+                <th>View Users</th>
                 <th>Invite User</th>
                 <th>Leave</th>
             </tr>
@@ -24,47 +35,57 @@
         <tbody>
             @foreach (var household in Model)
             {
-            <tr>
-                <td>@household.Id</td>
-                <td>@household.Name</td>
-                <td>@household.Description</td>
-                <td>@household.Created.ToString("dd-MM-yyyy HH:mm")</td>
-                <td>
-                    @if (household.Updated != null)
-                    {
-                        household.Updated.Value.ToString("dd-MM-yyyy HH:mm");
-                    }
-                </td>
-                <td>
-                    <div class="justify-content-around flex-b">
-                        <a title="Edit Household" href="@Url.Action("Edit", "Household", new { id = household.Id })">
-                            <i class="ti-pencil text-primary"></i>
-                        </a>
-                    </div>
-                </td>
-                <td>
-                    <div class="justify-content-around flex-b">
-                        <a title="See All Members" href="@Url.Action("GetUsers", "Household", new { id = household.Id })">
-                            <i class="ti-pencil text-primary"></i>
-                        </a>
-                    </div>
-                </td>
-                <td>
-                    <div class="justify-content-around flex-b">
-                        <a title="Invite Users To Household" href="@Url.Action("Invite", "Household", new { id = household.Id })">
-                            <i class="ti-pencil text-primary"></i>
-                        </a>
-                    </div>
-                </td>
-                <td>
-                    <div class="justify-content-around flex-b">
-                        <form method="post" action="@Url.Action("Leave", "Household", new { id = household.Id })">
-                            <a href="#" title="Leave Household" style="color:black" class="actionLeave">
-                            <i class="ti-trash"></i> Leave</a>
-                        </form>
-                    </div>
-                </td>
-            </tr>
+                <tr>
+                    <td>@household.Id</td>
+                    <td>@household.Name</td>
+                    <td>@household.Description</td>
+                    <td>@household.Created.ToString("dd-MM-yyyy HH:mm")</td>
+                    <td>
+                        @if (household.Updated != null)
+                        {
+                            @household.Updated.Value.ToString("dd-MM-yyyy HH:mm")
+                        }
+                    </td>
+                    <td>
+                        @if (household.IsOwner)
+                        {
+                            <div class="justify-content-around flex-b">
+                                <a title="Edit Household" href="@Url.Action("Edit", "Household", new { id = household.Id })">
+                                    <i class="ti-pencil text-primary"></i>
+                                </a>
+                            </div>
+                        }
+                    </td>
+                    <td>
+                        <div class="justify-content-around flex-b">
+                            <a title="See All Members" href="@Url.Action("GetUsers", "Household", new { id = household.Id, householdName = household.Name})">
+                                <i class="ti-id-badge text-primary"></i>
+                            </a>
+                        </div>
+                    </td>
+                    <td>
+                        @if (household.IsOwner)
+                        {
+                            <div class="justify-content-around flex-b">
+                                <a title="Invite Users To Household" href="@Url.Action("Invite", "Household", new { id = household.Id, householdName = household.Name })">
+                                    <i class="ti-gift text-primary"></i>
+                                </a>
+                            </div>
+                        }
+                    </td>
+                    <td>
+                        @if (!household.IsOwner)
+                        {
+                            <div class="justify-content-around flex-b">
+                                <form method="post" action="@Url.Action("Leave", "Household", new { id = household.Id })">
+                                    <a href="#" title="Leave Household" class="actionLeave">
+                                        <i class="ti-unlink"></i>
+                                    </a>
+                                </form>
+                            </div>
+                        }
+                    </td>
+                </tr>
             }
     </table>
 }

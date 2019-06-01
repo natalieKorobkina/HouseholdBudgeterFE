@@ -2,13 +2,21 @@
 @{
     ViewBag.Title = "Users of household";
 }
-
+@if (ViewBag.Error != null)
+{
+    <div class="card" style="text-align:center">
+        <div class="card-body">
+            <h4 style="color:red">@ViewBag.Error</h4>
+        </div>
+    </div>
+}
 @if (Model != null)
 {
     <div class="d-flex justify-content-around">
         <div class="card" style="width:80%">
             <div class="card-body">
-                <h3>Members of household</h3>
+                @*<h4>@ViewBag.Message</h4>*@
+                <h4>Users of household @Request.QueryString["householdName"]</h4>
                 <hr />
                 <table id="table_id" class="table-striped table-bordered compact" style="width:100%">
                     <thead>
@@ -30,7 +38,7 @@
         </div>
     </div>
 }
-
+<br />
 <div class="container-login100-form-btn m-b-16">
     @Html.ActionLink("Back to Households", "GetHouseholds", new { }, new { @class = "txt3" })
 </div>

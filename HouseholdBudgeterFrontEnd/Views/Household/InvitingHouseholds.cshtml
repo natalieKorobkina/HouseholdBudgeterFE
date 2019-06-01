@@ -1,0 +1,66 @@
+﻿@model List<HouseholdBudgeterFrontEnd.Models.ViewModels.HouseholdViewModel>
+@{
+    ViewBag.Title = "Your households";
+}
+
+<hr />
+@if (ViewBag.Error != null)
+{
+    <div class="card" style="text-align:center">
+        <div class="card-body">
+            <h4 style="color:red">@ViewBag.Error</h4>
+        </div>
+    </div>
+}
+<!--Show households in which user was invited-->
+@if (Model != null || Model.Any())
+{
+    <table id="table_id" class="table-striped table-bordered compact" style="width:100%">
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>Name</th>
+                <th>Description</th>
+                <th>Created</th>
+                <th>Updated</th>
+                <th>Join</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var household in Model)
+            {
+                <tr>
+                    <td>@household.Id</td>
+                    <td>@household.Name</td>
+                    <td>@household.Description</td>
+                    <td>@household.Created.ToString("dd-MM-yyyy HH:mm")</td>
+                    <td>
+                        @if (household.Updated != null)
+                        {
+                            @household.Updated.Value.ToString("dd-MM-yyyy HH:mm")
+                        }
+                    </td>
+                    <td>
+                        @if (!household.IsOwner)
+                        {
+                            <div class="justify-content-around flex-b">
+                                <form method="post" action="@Url.Action("InvitingHouseholds", "Household", new { id = household.Id })">
+                                    <a href="#" title="Join Household" style="color:black" class="actionJoin">
+                                        <i class="ti-link"></i> </a>
+                                </form>
+                            </div>
+                        }
+                    </td>
+                </tr>
+            }
+    </table>
+}
+
+@section scripts {
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $('#table_id').DataTable();
+        });
+    </script>
+    <script src="~/Scripts/scriptActionJoin.js" type="text/javascript"></script>
+}

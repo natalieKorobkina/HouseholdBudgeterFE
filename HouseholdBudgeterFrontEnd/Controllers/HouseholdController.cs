@@ -1,5 +1,5 @@
 ﻿using HouseholdBudgeterFrontEnd.Models;
-using HouseholdBudgeterFrontEnd.Models.Domain;
+using HouseholdBudgeterFrontEnd.Models.ActionFilters;
 using HouseholdBudgeterFrontEnd.Models.ViewModel;
 using HouseholdBudgeterFrontEnd.Models.ViewModels;
 using Newtonsoft.Json;
@@ -14,65 +14,36 @@ namespace HouseholdBudgeterFrontEnd.Controllers
 {
     public class HouseholdController : Controller
     {
+        private string url = "http://localhost:50270/api/household/";
+
         public ActionResult Create()
         {
             return View();
         }
 
         [HttpPost]
-        public ActionResult Create( CreateHouseholdViewModel model)
+        [CheckModelState]
+        [CheckAutorization]
+        public ActionResult Create(CreateHouseholdViewModel model)
         {
-            var url = "http://localhost:50270/api/household/PostHousehold";
-            var name = model.Name;
-            var description = model.Description;
-
-            var httpClient = new HttpClient();
+            var httpClient = HttpContext.Items["httpClient"] as HttpClient;
 
             var parameters = new List<KeyValuePair<string, string>>();
-            parameters.Add(new KeyValuePair<string, string>("name", name));
-            parameters.Add(new KeyValuePair<string, string>("description", description));
+            parameters.Add(new KeyValuePair<string, string>("name", model.Name));
+            parameters.Add(new KeyValuePair<string, string>("description", model.Description));
 
             var encodedParameters = new FormUrlEncodedContent(parameters);
-            var cookie = Request.Cookies["HBFrontEnd"];
+            var response = httpClient.PostAsync(url + "PostHousehold", encodedParameters).Result;
 
-            if (cookie == null)
-                return RedirectToAction("Login");
-
-            var token = cookie.Value;
-            httpClient.DefaultRequestHeaders.Add("Authorization", $"Bearer {token}");
-
-            var response = httpClient.PostAsync(url, encodedParameters).Result;
-
-            if (response.StatusCode == System.Net.HttpStatusCode.Created)
-            {
-                return RedirectToAction(nameof(HouseholdController.GetHouseholds));
-            }
-            else if (response.StatusCode == System.Net.HttpStatusCode.BadRequest)
-            {
-                var data = response.Content.ReadAsStringAsync().Result;
-                var result = JsonConvert.DeserializeObject<APIErrorData>(data);
-
-                return View();
-            }
-
-            return RedirectToAction(nameof(HomeController.Index), "Home");
+            return CheckStatusCode(response, "GetHouseholds");
         }
 
-        public ActionResult Edit (int id)
+        [CheckAutorization]
+        public ActionResult Edit(int id)
         {
-            var url = $"http://localhost:50270/api/household/GetHousehold/{id}";
+            var httpClient = HttpContext.Items["httpClient"] as HttpClient;
 
-            var httpClient = new HttpClient();
-            var cookie = Request.Cookies["HBFrontEnd"];
-
-            if (cookie == null)
-                return RedirectToAction("Login");
-
-            var token = cookie.Value;
-            httpClient.DefaultRequestHeaders.Add("Authorization", $"Bearer {token}");
-
-
-            var response = httpClient.GetAsync(url).Result;
+            var response = httpClient.GetAsync(url + $"GetHousehold/{id}").Result;
 
             if (response.IsSuccessStatusCode)
             {
@@ -81,87 +52,78 @@ namespace HouseholdBudgeterFrontEnd.Controllers
                 return View(result);
             }
 
-            return View("GetHouseholds");
+            return CheckError(response);
         }
 
         [HttpPost]
+        [CheckAutorization]
+        [CheckModelState]
         public ActionResult Edit(int id, CreateHouseholdViewModel model)
         {
-            var url = $"http://localhost:50270/api/household/PutHousehold/{id}";
-            var httpClient = new HttpClient();
-
+            var httpClient = HttpContext.Items["httpClient"] as HttpClient; 
             var parameters = new List<KeyValuePair<string, string>>();
 
             parameters.Add(new KeyValuePair<string, string>("name", model.Name));
             parameters.Add(new KeyValuePair<string, string>("description", model.Description));
 
             var encodedParameters = new FormUrlEncodedContent(parameters);
-            var cookie = Request.Cookies["HBFrontEnd"];
+            var response = httpClient.PutAsync(url + $"PutHousehold/{id}", encodedParameters).Result;
 
-            if (cookie == null)
-                return RedirectToAction("Login");
+            return CheckStatusCode(response, "Edit");
+        }
 
-            var token = cookie.Value;
-            httpClient.DefaultRequestHeaders.Add("Authorization", $"Bearer {token}");
+        [CheckAutorization]
+        public ActionResult GetHouseholds()
+        {
+            ViewBag.Error = TempData["Error"];
 
-            var response = httpClient.PutAsync(url, encodedParameters).Result;
+            var httpClient = HttpContext.Items["httpClient"] as HttpClient;
+            var response = httpClient.GetAsync(url + "GetAll").Result;
 
-            if (response.StatusCode == System.Net.HttpStatusCode.OK)
+            if (response.IsSuccessStatusCode)
             {
-                return RedirectToAction(nameof(HouseholdController.GetHouseholds));
+                var data = response.Content.ReadAsStringAsync().Result;
+                var result = JsonConvert.DeserializeObject<List<HouseholdViewModel>>(data);
+
+                return View(result);
+            }
+
+            return CheckError(response);
+        }
+
+        [HttpPost]
+        [CheckAutorization]
+        public ActionResult Leave(int id)
+        {
+            var httpClient = HttpContext.Items["httpClient"] as HttpClient;
+            var response = httpClient.PostAsync(url + $"postleave/{id}", null).Result;
+
+            if (response.IsSuccessStatusCode)
+            {
+                return RedirectToAction("GetHouseholds");
             }
             else if (response.StatusCode == System.Net.HttpStatusCode.BadRequest)
             {
                 var data = response.Content.ReadAsStringAsync().Result;
                 var result = JsonConvert.DeserializeObject<APIErrorData>(data);
+                string messageError = result.Message;
+                TempData["Error"] = messageError;
 
-                return View();
+                return RedirectToAction("GetHouseholds");
             }
 
-            return View();
-        }
-
-        public ActionResult GetHouseholds()
-        {
-            var url = $"http://localhost:50270/api/household/GetAll";
-            var httpClient = new HttpClient();
-            var cookie = Request.Cookies["HBFrontEnd"];
-
-            if (cookie == null)
-                return RedirectToAction("Login");
-
-            var token = cookie.Value;
-            httpClient.DefaultRequestHeaders.Add("Authorization", $"Bearer {token}");
-
-            var response = httpClient.GetAsync(url).Result;
-
-            if (response.IsSuccessStatusCode)
-            {
-                var data = response.Content.ReadAsStringAsync().Result;
-                var result = JsonConvert.DeserializeObject<List<Household>>(data);
-
-                return View(result);
-            }
-
-            return View();
+            return View("Error");
         }
 
 
-        public ActionResult GetUsers(int id)
+        [CheckAutorization]
+        public ActionResult GetUsers(int id, string householdName)
         {
-            var url = $"http://localhost:50270/api/household/GetParticipants/{id}";
+            //ViewBag.Message = $"Users of household {householdName}:";
 
-            var httpClient = new HttpClient();
-            var cookie = Request.Cookies["HBFrontEnd"];
+            var httpClient = HttpContext.Items["httpClient"] as HttpClient;
+            var response = httpClient.GetAsync(url + $"GetParticipants/{id}").Result;
 
-            if (cookie == null)
-                return RedirectToAction("Login");
-
-            var token = cookie.Value;
-            httpClient.DefaultRequestHeaders.Add("Authorization", $"Bearer {token}");
-
-
-            var response = httpClient.GetAsync(url).Result;
             if (response.IsSuccessStatusCode)
             {
                 var data = response.Content.ReadAsStringAsync().Result;
@@ -169,7 +131,7 @@ namespace HouseholdBudgeterFrontEnd.Controllers
                 return View(result);
             }
 
-            return View("GetHouseholds");
+            return CheckError(response);
         }
 
         public ActionResult Invite(int id)
@@ -178,102 +140,82 @@ namespace HouseholdBudgeterFrontEnd.Controllers
         }
 
         [HttpPost]
+        [CheckAutorization]
+        [CheckModelState]
         public ActionResult Invite(int id, InviteViewModel model)
         {
-            var url = $"http://localhost:50270/api/household/invite/{id}?email={model.Email}";
-            var httpClient = new HttpClient();
+           // ViewBag.Title = $"Invite users to household {householdName}";
+            var httpClient = HttpContext.Items["httpClient"] as HttpClient;
+            var response = httpClient.PostAsync(url + $"invite/{id}?email={model.Email}", null).Result;
 
-            var cookie = Request.Cookies["HBFrontEnd"];
-
-            if (cookie == null)
-                return RedirectToAction("Login");
-
-            var token = cookie.Value;
-            httpClient.DefaultRequestHeaders.Add("Authorization", $"Bearer {token}");
-
-            var response = httpClient.PostAsync(url, null).Result;
-
-            if (response.StatusCode == System.Net.HttpStatusCode.Created)
+            if (response.IsSuccessStatusCode)
             {
-                return RedirectToAction(nameof(HouseholdController.GetHouseholds));
-            }
-            else if (response.StatusCode == System.Net.HttpStatusCode.BadRequest)
-            {
-                var data = response.Content.ReadAsStringAsync().Result;
-                var result = JsonConvert.DeserializeObject<APIErrorData>(data);
+                ViewBag.Message = $"The invitation was sent to user with email {model.Email}";
 
                 return View();
             }
 
-            return View();
+            return CheckError(response);
         }
 
-        public ActionResult Join()
+        [CheckAutorization]
+        public ActionResult InvitingHouseholds()
         {
-            return View();
+            var httpClient = HttpContext.Items["httpClient"] as HttpClient;
+            var response = httpClient.GetAsync(url + "GetInvitingHouseholds").Result;
+
+            if (response.IsSuccessStatusCode)
+            {
+                var data = response.Content.ReadAsStringAsync().Result;
+                var result = JsonConvert.DeserializeObject<List<HouseholdViewModel>>(data);
+
+                return View(result);
+            }
+
+            return CheckError(response);
         }
 
         [HttpPost]
-        public ActionResult Join(int id)
+        [CheckAutorization]
+        public ActionResult InvitingHouseholds(int id)
         {
-            var url = $"http://localhost:50270/api/household/postjoin/joiningHouseholdId={id}";
-            var httpClient = new HttpClient();
+            var httpClient = HttpContext.Items["httpClient"] as HttpClient;
+            var response = httpClient.PostAsync(url + $"postjoin?joiningHouseholdId={id}", null).Result;
 
-            var cookie = Request.Cookies["HBFrontEnd"];
+            return CheckError(response);
+        }
 
-            if (cookie == null)
-                return RedirectToAction("Login");
+        public ActionResult CheckStatusCode(HttpResponseMessage response, string actionName)
+        {
+            if (response.IsSuccessStatusCode)
+                return RedirectToAction(actionName);
+            else
+                return CheckError(response);
+        }
 
-            var token = cookie.Value;
-            httpClient.DefaultRequestHeaders.Add("Authorization", $"Bearer {token}");
-
-            var response = httpClient.PostAsync(url, null).Result;
-
-            if (response.StatusCode == System.Net.HttpStatusCode.Created)
-            {
-                return RedirectToAction(nameof(HouseholdController.GetHouseholds));
-            }
-            else if (response.StatusCode == System.Net.HttpStatusCode.BadRequest)
+        public ActionResult CheckError(HttpResponseMessage response)
+        {
+            if (response.StatusCode == System.Net.HttpStatusCode.BadRequest
+                || response.StatusCode == System.Net.HttpStatusCode.NotFound)
             {
                 var data = response.Content.ReadAsStringAsync().Result;
                 var result = JsonConvert.DeserializeObject<APIErrorData>(data);
-
+                string messageError = result.Message;
+                if (String.IsNullOrEmpty(messageError))
+                {
+                    var modelErrors = result.ModelState.SingleOrDefault(p => p.Key == "").Value;
+                    foreach (var error in modelErrors)
+                        ModelState.AddModelError("", error);
+                }
+                else
+                {
+                    ViewBag.Error = messageError;
+                }
+                  
                 return View();
             }
 
-            return View();
+            return View("Error");
         }
-
-        [HttpPost]
-        public ActionResult Leave(int id)
-        {
-            var url = $"http://localhost:50270/api/household/postleave/{id}";
-            var httpClient = new HttpClient();
-
-            var cookie = Request.Cookies["HBFrontEnd"];
-
-            if (cookie == null)
-                return RedirectToAction("Login");
-
-            var token = cookie.Value;
-            httpClient.DefaultRequestHeaders.Add("Authorization", $"Bearer {token}");
-
-            var response = httpClient.PostAsync(url, null).Result;
-
-            if (response.StatusCode == System.Net.HttpStatusCode.OK)
-            {
-                return RedirectToAction(nameof(HouseholdController.GetHouseholds));
-            }
-            else if (response.StatusCode == System.Net.HttpStatusCode.BadRequest)
-            {
-                var data = response.Content.ReadAsStringAsync().Result;
-                var result = JsonConvert.DeserializeObject<APIErrorData>(data);
-                ModelState.AddModelError("", result.ToString());
-                return GetHouseholds();
-            }
-
-            return RedirectToAction(nameof(HouseholdController.GetHouseholds));
-        }
-
     }
 }

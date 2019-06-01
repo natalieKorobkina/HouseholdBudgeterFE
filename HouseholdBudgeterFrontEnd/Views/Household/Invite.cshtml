@@ -1,26 +1,46 @@
 ﻿@model HouseholdBudgeterFrontEnd.Models.ViewModels.InviteViewModel
 @{
-    ViewBag.Title = "Invite a user to the husehold";
+    ViewBag.Title = "Invite a user to the household";
 }
 
-<h2>@ViewBag.Title.</h2>
-
+<h3>@ViewBag.Title</h3>
+@if (ViewBag.Message != null)
+{
+    <div class="card" style="text-align:center">
+        <div class="card-body">
+            <h4 style="color:green">@ViewBag.Message</h4>
+        </div>
+    </div>
+}
+@if (ViewBag.Error != null)
+{
+    <div class="card" style="text-align:center">
+        <div class="card-body">
+            <h4 style="color:red">@ViewBag.Error</h4>
+        </div>
+    </div>
+}
 @using (Html.BeginForm("Invite", "Household", FormMethod.Post, new { @class = "form-horizontal", role = "form" }))
 {
     @Html.AntiForgeryToken()
     @Html.ValidationSummary("", new { @class = "text-danger" })
+    @Html.HiddenFor(m => m.HouseholdName)
     <div class="form-group">
-        <label class = "col-md-2 control-label">Put User's Email:</label>
+        <label class="col-md-2 control-label">Put User's Email:</label>
         <div class="col-md-10">
             @Html.TextBoxFor(m => m.Email, new { @class = "form-control" })
         </div>
     </div>
     <div class="form-group">
         <div class="col-md-offset-2 col-md-10">
-            <input type="submit" value="Invite" class="btn btn-default" />
+            <input type="submit" value="Invite" class="btn btn-dark" />
         </div>
     </div>
 }
+<br />
+<div class="container-login100-form-btn m-b-16">
+    @Html.ActionLink("Back to Households", "GetHouseholds", new { }, new { @class = "txt3" })
+</div>
 @section Scripts {
     @Scripts.Render("~/bundles/jqueryval")
 }
