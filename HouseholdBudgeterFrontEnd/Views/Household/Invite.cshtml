@@ -3,7 +3,7 @@
     ViewBag.Title = "Invite a user to the household";
 }
 
-<h3>@ViewBag.Title</h3>
+<h3>@ViewBag.Title @Request.QueryString["householdName"]</h3>
 @if (ViewBag.Message != null)
 {
     <div class="card" style="text-align:center">

@@ -382,6 +382,7 @@
     <Content Include="Views\Household\Invite.cshtml" />
     <Content Include="Views\Household\InvitingHouseholds.cshtml" />
     <Content Include="Views\Shared\ErrorAccount.cshtml" />
+    <Content Include="Views\Account\ForgotPasswordConfirmation.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

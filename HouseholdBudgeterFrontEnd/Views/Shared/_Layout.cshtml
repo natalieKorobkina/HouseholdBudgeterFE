@@ -19,20 +19,35 @@
 </head>
 <body>
     <div class="container-scroller">
-        <div class="container-fluid page-body-wrapper">
             <nav class="navbar col-lg-12 col-12 p-0 fixed-top d-flex flex-row">
                 <div class="text-center navbar-brand-wrapper d-flex align-items-center justify-content-center">
                     <div class="navbar-brand brand-logo mr-5" href="index.html">
-                        @using (Html.BeginForm("LogOff", "Account", FormMethod.Post, new { id = "logoutForm", @class = "nav-link" }))
-                        {
-                            @Html.AntiForgeryToken()
-                            <a class="nav-link" href="javascript:document.getElementById('logoutForm').submit()" style="color:black">
-                                Log Off
-                            </a>
-                        }
                     </div>
                 </div>
-                </nav>
+                <div class="navbar-menu-wrapper d-flex align-items-center justify-content-between">
+                    <button class="navbar-toggler navbar-toggler align-self-center" type="button" data-toggle="minimize">
+                        <span class="ti-view-list"></span>
+                    </button>
+                    <ul class="navbar-nav mr-lg-2">
+                        <li class="nav-item nav-search d-none d-lg-block">
+                            Household Budgeter
+                        </li>
+                    </ul>
+                    <ul class="navbar-nav navbar-nav-right">
+                        <li class="nav-item nav-profile dropdown">
+                            @using (Html.BeginForm("LogOff", "Account", FormMethod.Post, new { id = "logoutForm", @class = "nav-link" }))
+                            {
+                                @Html.AntiForgeryToken()
+                                <a class="nav-link dropdown-toggle" href="javascript:document.getElementById('logoutForm').submit()" 
+                                   style="color:grey; border:2px solid lightgray; border-radius:20px; padding: 8px; background-color:lightgray">
+                                    Log Off
+                                </a>
+                            }
+                        </li>
+                    </ul>
+                </div>
+            </nav>
+            <div class="container-fluid page-body-wrapper">
                 <nav class="sidebar sidebar-offcanvas" id="sidebar">
                     <ul class="nav">
                         @if (Request.Cookies["HBFrontEnd"] != null)
@@ -67,7 +82,8 @@
                             </li>
                             <li class="nav-item">
                                 <a href="@Url.Action("ChangePassword", "Account")" class="nav-link">
-                                    <i class="ti-user menu-icon"></i> Change Password
+                                    <i class="ti-user menu-icon"></i>
+                                    <span class="menu-title">Change Password</span>
                                 </a>
                             </li>
                         }
@@ -86,8 +102,8 @@
                         </div>
                     </div>
                 </div>
+            </div>
         </div>
-    </div>
 
     <script src="~/vendor/base/vendor.bundle.base.js"></script>
     <script src="~/vendor/chart.js/Chart.min.js"></script>

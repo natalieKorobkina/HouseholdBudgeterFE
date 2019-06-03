@@ -119,8 +119,6 @@ namespace HouseholdBudgeterFrontEnd.Controllers
         [CheckAutorization]
         public ActionResult GetUsers(int id, string householdName)
         {
-            //ViewBag.Message = $"Users of household {householdName}:";
-
             var httpClient = HttpContext.Items["httpClient"] as HttpClient;
             var response = httpClient.GetAsync(url + $"GetParticipants/{id}").Result;
 
@@ -134,25 +132,27 @@ namespace HouseholdBudgeterFrontEnd.Controllers
             return CheckError(response);
         }
 
-        public ActionResult Invite(int id)
+        public ActionResult Invite(int id, string householdName)
         {
+            if (TempData["Message"] != null)
+                ViewBag.Message = TempData["Message"].ToString();
+
             return View();
         }
 
         [HttpPost]
         [CheckAutorization]
         [CheckModelState]
-        public ActionResult Invite(int id, InviteViewModel model)
+        public ActionResult Invite(int id, string householdName, InviteViewModel model)
         {
-           // ViewBag.Title = $"Invite users to household {householdName}";
             var httpClient = HttpContext.Items["httpClient"] as HttpClient;
             var response = httpClient.PostAsync(url + $"invite/{id}?email={model.Email}", null).Result;
 
             if (response.IsSuccessStatusCode)
             {
-                ViewBag.Message = $"The invitation was sent to user with email {model.Email}";
+                TempData["Message"] = $"The invitation was sent to user with email {model.Email}";
 
-                return View();
+                return RedirectToAction("Invite", new { id=id, householdName=householdName});
             }
 
             return CheckError(response);
@@ -201,16 +201,8 @@ namespace HouseholdBudgeterFrontEnd.Controllers
                 var data = response.Content.ReadAsStringAsync().Result;
                 var result = JsonConvert.DeserializeObject<APIErrorData>(data);
                 string messageError = result.Message;
-                if (String.IsNullOrEmpty(messageError))
-                {
-                    var modelErrors = result.ModelState.SingleOrDefault(p => p.Key == "").Value;
-                    foreach (var error in modelErrors)
-                        ModelState.AddModelError("", error);
-                }
-                else
-                {
-                    ViewBag.Error = messageError;
-                }
+
+                ViewBag.Error = messageError;
                   
                 return View();
             }

@@ -95,18 +95,28 @@ namespace HouseholdBudgeterFrontEnd.Controllers
         public ActionResult ForgotPassword(ForgotPasswordViewModel model)
         {
             var httpClient = new HttpClient();
-
+            var localhost = HttpContext.Request.Url.GetLeftPart(UriPartial.Authority);
             var parameters = new List<KeyValuePair<string, string>>();
             parameters.Add(new KeyValuePair<string, string>("email", model.Email));
 
             var encodedValues = new FormUrlEncodedContent(parameters);
-            var response = httpClient.PostAsync(url + $"ForgotPassword", encodedValues).Result;
+            var response = httpClient.PostAsync(url + $"ForgotPassword?localhost={localhost}", encodedValues).Result;
  
-            return CheckError(response, "ResetPassword");
+            return CheckError(response, "ForgotPasswordConfirmation");
         }
 
-        public ActionResult ResetPassword()
+        public ActionResult ForgotPasswordConfirmation()
         {
+            return View();
+        }
+
+        public ActionResult ResetPassword(string code)
+        {
+            if (code == null)
+            {
+                ModelState.AddModelError(string.Empty,
+                    "Try again");
+            }
             return View();
         }
 
@@ -165,11 +175,16 @@ namespace HouseholdBudgeterFrontEnd.Controllers
             {
                 var data = response.Content.ReadAsStringAsync().Result;
                 var result = JsonConvert.DeserializeObject<APIErrorData>(data);
-                var errors = result.ModelState.SingleOrDefault(p => p.Key == "").Value;
+                var modelErrors = result.ModelState.SingleOrDefault(p => p.Key == "").Value;
 
-                foreach (var error in errors)
-                    ModelState.AddModelError("", error);
-
+                if(modelErrors != null && modelErrors.Any())
+                    foreach (var error in modelErrors)
+                        ModelState.AddModelError("", error);
+                else
+                {
+                    string messageError = result.Message;
+                    ViewBag.Error = messageError;
+                }
                 return View();
             }
             else if (response.StatusCode == System.Net.HttpStatusCode.InternalServerError)
