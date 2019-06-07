@@ -1,0 +1,53 @@
+﻿@model CreateEditTransactionViewModel
+@{
+    ViewBag.Title = "Edit Transaction";
+}
+
+<h2>@ViewBag.Title.</h2>
+@if (ViewBag.Error != null)
+{
+    <div class="card" style="text-align:center">
+        <div class="card-body">
+            <h4 style="color:red">@ViewBag.Error</h4>
+        </div>
+    </div>
+}
+@using (Html.BeginForm("Edit", "Transaction", FormMethod.Post, new { @class = "form-horizontal", role = "form", }))
+{
+    @Html.AntiForgeryToken()
+    @Html.ValidationSummary("", new { @class = "text-danger" })
+    @Html.HiddenFor(model => model.BankAccountId)
+    @Html.HiddenFor(model => model.CategoryId)
+    <div class="form-group">
+        @Html.LabelFor(m => m.Title, new { @class = "col-md-2 control-label" })
+        <div class="col-md-10">
+            @Html.TextBoxFor(m => m.Title, new { @class = "form-control" })
+        </div>
+    </div>
+    <div class="form-group">
+        @Html.LabelFor(m => m.Description, new { @class = "col-md-2 control-label" })
+        <div class="col-md-10">
+            @Html.TextBoxFor(m => m.Description, new { @class = "form-control" })
+        </div>
+    </div>
+    <div class="form-group">
+        @Html.LabelFor(m => m.Ammount, new { @class = "col-md-2 control-label" })
+        <div class="col-md-10">
+            @Html.TextBoxFor(m => m.Ammount, new { @class = "form-control" })
+        </div>
+    </div>
+    <div class="form-group">
+        @Html.LabelFor(m => m.TransactionDate, new { @class = "col-md-2 control-label" })
+        <div class="col-md-10">
+            @Html.TextBoxFor(m => m.TransactionDate, new { @class = "form-control" })
+        </div>
+    </div>
+    <div class="form-group">
+        <div class="col-md-offset-2 col-md-10">
+            <input type="submit" value="Edit Transaction" class="btn btn-dark" />
+        </div>
+    </div>
+}
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+}

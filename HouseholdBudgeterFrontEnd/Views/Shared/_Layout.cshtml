@@ -11,6 +11,7 @@
     <link rel="stylesheet" type="text/css" href="~/vendor/animsition/css/animsition.min.css">
     <link rel="stylesheet" type="text/css" href="~/vendor/select2/select2.min.css">
     <link rel="stylesheet" type="text/css" href="~/vendor/daterangepicker/daterangepicker.css">
+    <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
     <link rel="stylesheet" href="~/vendor/ti-icons/css/themify-icons.css">
     <link rel="stylesheet" href="~/vendor/base/vendor.bundle.base.css">
     <link rel="stylesheet" type="text/css" href="~/css/util.css">
@@ -19,84 +20,83 @@
 </head>
 <body>
     <div class="container-scroller">
-            <nav class="navbar col-lg-12 col-12 p-0 fixed-top d-flex flex-row">
-                <div class="text-center navbar-brand-wrapper d-flex align-items-center justify-content-center">
-                    <div class="navbar-brand brand-logo mr-5" href="index.html">
-                    </div>
+        <nav class="navbar col-lg-12 col-12 p-0 fixed-top d-flex flex-row">
+            <div class="text-center navbar-brand-wrapper d-flex align-items-center justify-content-center">
+                <div class="navbar-brand brand-logo mr-5" href="index.html">
                 </div>
-                <div class="navbar-menu-wrapper d-flex align-items-center justify-content-between">
-                    <button class="navbar-toggler navbar-toggler align-self-center" type="button" data-toggle="minimize">
-                        <span class="ti-view-list"></span>
-                    </button>
-                    <ul class="navbar-nav mr-lg-2">
-                        <li class="nav-item nav-search d-none d-lg-block">
-                            Household Budgeter
-                        </li>
-                    </ul>
-                    <ul class="navbar-nav navbar-nav-right">
-                        <li class="nav-item nav-profile dropdown">
-                            @using (Html.BeginForm("LogOff", "Account", FormMethod.Post, new { id = "logoutForm", @class = "nav-link" }))
-                            {
-                                @Html.AntiForgeryToken()
-                                <a class="nav-link dropdown-toggle" href="javascript:document.getElementById('logoutForm').submit()" 
-                                   style="color:grey; border:2px solid lightgray; border-radius:20px; padding: 8px; background-color:lightgray">
-                                    Log Off
-                                </a>
-                            }
-                        </li>
-                    </ul>
-                </div>
-            </nav>
-            <div class="container-fluid page-body-wrapper">
-                <nav class="sidebar sidebar-offcanvas" id="sidebar">
-                    <ul class="nav">
-                        @if (Request.Cookies["HBFrontEnd"] != null)
+            </div>
+            <div class="navbar-menu-wrapper d-flex align-items-center justify-content-between">
+                <button class="navbar-toggler navbar-toggler align-self-center" type="button" data-toggle="minimize">
+                    <span class="ti-view-list"></span>
+                </button>
+                <ul class="navbar-nav mr-lg-2">
+                    <li class="nav-item nav-search d-none d-lg-block">
+                        Household Budgeter
+                    </li>
+                </ul>
+                <ul class="navbar-nav navbar-nav-right">
+                    <li class="nav-item nav-profile dropdown">
+                        @using (Html.BeginForm("LogOff", "Account", FormMethod.Post, new { id = "logoutForm", @class = "nav-link" }))
                         {
-                            <li class="nav-item">
-                                <a class="nav-link" data-toggle="collapse" href="#households" aria-expanded="false" aria-controls="households">
-                                    <i class="ti-file menu-icon"></i>
-                                    <span class="menu-title">Households</span>
-                                </a>
-                                <div class="collapse" id="households">
-                                    <ul class="nav flex-column sub-menu" style="list-style:none">
-                                        <li class="nav-item">
-                                            <a href="@Url.Action("Create", "Household")" class="nav-link">
-                                                <i class="ti-notepad menu-icon"></i>
-                                                <span class="menu-title">Create Household</span>
-                                            </a>
-                                        </li>
-                                        <li class="nav-item ">
-                                            <a href="@Url.Action("GetHouseholds", "Household")" class="nav-link">
-                                                <i class="ti-gallery menu-icon"></i>
-                                                <span class="menu-title">All Households</span>
-                                            </a>
-                                        </li>
-                                        <li class="nav-item ">
-                                            <a href="@Url.Action("InvitingHouseholds", "Household")" class="nav-link">
-                                                <i class="ti-pin-alt menu-icon"></i>
-                                                <span class="menu-title">Join Household</span>
-                                            </a>
-                                        </li>
-                                    </ul>
-                                </div>
-                            </li>
-                            <li class="nav-item">
-                                <a href="@Url.Action("ChangePassword", "Account")" class="nav-link">
-                                    <i class="ti-user menu-icon"></i>
-                                    <span class="menu-title">Change Password</span>
-                                </a>
-                            </li>
+                            @Html.AntiForgeryToken()
+                            <a class="nav-link dropdown-toggle" href="javascript:document.getElementById('logoutForm').submit()"
+                               style="color:grey; border:2px solid lightgray; border-radius:20px; padding: 8px; background-color:lightgray">
+                                Log Off
+                            </a>
                         }
-                    </ul>
-                </nav>
-                <div class="main-panel">
-                    <div class="content-wrapper">
-                        <div class="row">
-                            <div class="col-md-12 grid-margin card">
-                                <div class="d-flex justify-content-between align-items-center">
-                                    <div class="card-body">
-                                        @RenderBody()
-                                    </div>
+                    </li>
+                </ul>
+            </div>
+        </nav>
+        <div class="container-fluid page-body-wrapper">
+            <nav class="sidebar sidebar-offcanvas" id="sidebar">
+                <ul class="nav">
+                    @if (Request.Cookies["HBFrontEnd"] != null)
+                    {
+                        <li class="nav-item">
+                            <a class="nav-link" data-toggle="collapse" href="#households" aria-expanded="false" aria-controls="households">
+                                <i class="ti-file menu-icon"></i>
+                                <span class="menu-title">Households</span>
+                            </a>
+                            <div class="collapse" id="households">
+                                <ul class="nav flex-column sub-menu" style="list-style:none">
+                                    <li class="nav-item">
+                                        <a href="@Url.Action("Create", "Household")" class="nav-link">
+                                            <i class="ti-notepad menu-icon"></i>
+                                            <span class="menu-title">Create Household</span>
+                                        </a>
+                                    </li>
+                                    <li class="nav-item ">
+                                        <a href="@Url.Action("GetHouseholds", "Household")" class="nav-link">
+                                            <i class="ti-gallery menu-icon"></i>
+                                            <span class="menu-title">All Households</span>
+                                        </a>
+                                    </li>
+                                    <li class="nav-item ">
+                                        <a href="@Url.Action("InvitingHouseholds", "Household")" class="nav-link">
+                                            <i class="ti-pin-alt menu-icon"></i>
+                                            <span class="menu-title">Join Household</span>
+                                        </a>
+                                    </li>
+                                </ul>
+                            </div>
+                        </li>
+                        <li class="nav-item">
+                            <a href="@Url.Action("ChangePassword", "Account")" class="nav-link">
+                                <i class="ti-user menu-icon"></i>
+                                <span class="menu-title">Change Password</span>
+                            </a>
+                        </li>
+                    }
+                </ul>
+            </nav>
+            <div class="main-panel">
+                <div class="content-wrapper">
+                    <div class="row">
+                        <div class="col-md-12 grid-margin card">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <div class="card-body">
+                                    @RenderBody()
                                 </div>
                             </div>
                         </div>
@@ -104,6 +104,7 @@
                 </div>
             </div>
         </div>
+    </div>
 
     <script src="~/vendor/base/vendor.bundle.base.js"></script>
     <script src="~/vendor/chart.js/Chart.min.js"></script>
@@ -113,6 +114,7 @@
     <script src="~/js/todolist.js"></script>
     <script src="~/js/dashboard.js"></script>
     <script src="//cdn.datatables.net/1.10.19/js/jquery.dataTables.min.js"></script>
+    <script src="//cdn.jsdelivr.net/npm/flatpickr"></script>
 
     @RenderSection("scripts", required: false)
 </body>

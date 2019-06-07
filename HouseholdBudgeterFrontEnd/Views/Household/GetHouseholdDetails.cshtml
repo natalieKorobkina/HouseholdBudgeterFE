@@ -1,0 +1,37 @@
+﻿@model List<HouseholdDetailsViewModel>
+@{
+    ViewBag.Title = "Household Details";
+}
+<hr />
+@if (ViewBag.Error != null)
+{
+    <div class="card" style="text-align:center">
+        <div class="card-body">
+            <h4 style="color:red">@ViewBag.Error</h4>
+        </div>
+    </div>
+}
+<!--Show all households-->
+@if (Model != null && Model.Any())
+{
+    foreach (var bankAccount in Model)
+    {
+        <div>@bankAccount.BankAccountName : @bankAccount.BankAccountBalance</div>
+        <div>By category:</div>
+        foreach (var category in bankAccount.Categories)
+        {
+            <div>@category.CategoryName : @category.CategoryBalance</div>
+        }
+        <br />
+    }
+}
+
+@section scripts {
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $('#table_id').DataTable();
+        });
+    </script>
+    <script src="~/Scripts/scriptAction.js" type="text/javascript"></script>
+    <script src="~/Scripts/scriptActionDelete.js" type="text/javascript"></script>
+}

@@ -1,6 +1,6 @@
-﻿@model CreateHouseholdViewModel
+﻿@model CreateEditBAViewModel
 @{
-    ViewBag.Title = "Create new Household";
+    ViewBag.Title = "Edit Bank Account";
 }
 
 <h2>@ViewBag.Title.</h2>
@@ -12,10 +12,11 @@
         </div>
     </div>
 }
-@using (Html.BeginForm("Create", "Household", FormMethod.Post, new { @class = "form-horizontal", role = "form" }))
+@using (Html.BeginForm("Edit", "BankAccount", FormMethod.Post, new { @class = "form-horizontal", role = "form", }))
 {
     @Html.AntiForgeryToken()
     @Html.ValidationSummary("", new { @class = "text-danger" })
+    @Html.HiddenFor(model => model.HouseholdId)
     <div class="form-group">
         @Html.LabelFor(m => m.Name, new { @class = "col-md-2 control-label" })
         <div class="col-md-10">
@@ -30,7 +31,7 @@
     </div>
     <div class="form-group">
         <div class="col-md-offset-2 col-md-10">
-            <input type="submit" value="Create Household" class="btn btn-dark" />
+            <input type="submit" value="Edit Bank Account" class="btn btn-dark" />
         </div>
     </div>
 }

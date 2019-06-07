@@ -16,6 +16,7 @@ namespace HouseholdBudgeterFrontEnd.Controllers
     {
         private string url = "http://localhost:50270/api/household/";
 
+        [CheckAutorization]
         public ActionResult Create()
         {
             return View();
@@ -49,6 +50,7 @@ namespace HouseholdBudgeterFrontEnd.Controllers
             {
                 var data = response.Content.ReadAsStringAsync().Result;
                 var result = JsonConvert.DeserializeObject<CreateHouseholdViewModel>(data);
+
                 return View(result);
             }
 
@@ -91,6 +93,23 @@ namespace HouseholdBudgeterFrontEnd.Controllers
             return CheckError(response);
         }
 
+        [CheckAutorization]
+        public ActionResult GetHouseholdDetails(int id)
+        {
+            var httpClient = HttpContext.Items["httpClient"] as HttpClient;
+            var response = httpClient.GetAsync(url + $"GetHouseholdDetails/{id}").Result;
+
+            if (response.IsSuccessStatusCode)
+            {
+                var data = response.Content.ReadAsStringAsync().Result;
+                var result = JsonConvert.DeserializeObject<List<HouseholdDetailsViewModel>>(data);
+
+                return View(result);
+            }
+
+            return CheckError(response);
+        }
+
         [HttpPost]
         [CheckAutorization]
         public ActionResult Leave(int id)
@@ -115,6 +134,29 @@ namespace HouseholdBudgeterFrontEnd.Controllers
             return View("Error");
         }
 
+        [HttpPost]
+        [CheckAutorization]
+        public ActionResult Delete(int id)
+        {
+            var httpClient = HttpContext.Items["httpClient"] as HttpClient;
+            var response = httpClient.DeleteAsync(url + $"deletehousehold/{id}").Result;
+
+            if (response.IsSuccessStatusCode)
+            {
+                return RedirectToAction("GetHouseholds");
+            }
+            else if (response.StatusCode == System.Net.HttpStatusCode.BadRequest)
+            {
+                var data = response.Content.ReadAsStringAsync().Result;
+                var result = JsonConvert.DeserializeObject<APIErrorData>(data);
+                string messageError = result.Message;
+                TempData["Error"] = messageError;
+
+                return RedirectToAction("GetHouseholds");
+            }
+
+            return View("Error");
+        }
 
         [CheckAutorization]
         public ActionResult GetUsers(int id, string householdName)
@@ -182,7 +224,7 @@ namespace HouseholdBudgeterFrontEnd.Controllers
             var httpClient = HttpContext.Items["httpClient"] as HttpClient;
             var response = httpClient.PostAsync(url + $"postjoin?joiningHouseholdId={id}", null).Result;
 
-            return CheckError(response);
+            return CheckStatusCode(response, "InvitingHouseholds");
         }
 
         public ActionResult CheckStatusCode(HttpResponseMessage response, string actionName)
@@ -195,8 +237,7 @@ namespace HouseholdBudgeterFrontEnd.Controllers
 
         public ActionResult CheckError(HttpResponseMessage response)
         {
-            if (response.StatusCode == System.Net.HttpStatusCode.BadRequest
-                || response.StatusCode == System.Net.HttpStatusCode.NotFound)
+            if (response.StatusCode == System.Net.HttpStatusCode.BadRequest)
             {
                 var data = response.Content.ReadAsStringAsync().Result;
                 var result = JsonConvert.DeserializeObject<APIErrorData>(data);

@@ -127,8 +127,11 @@
     <Compile Include="App_Start\FilterConfig.cs" />
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="Controllers\AccountController.cs" />
+    <Compile Include="Controllers\BankAccountController.cs" />
+    <Compile Include="Controllers\CategoryController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\HouseholdController.cs" />
+    <Compile Include="Controllers\TransactionController.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
@@ -136,14 +139,25 @@
     <Compile Include="Models\ActionFilters\CheckAutorization.cs" />
     <Compile Include="Models\ActionFilters\CheckModelState.cs" />
     <Compile Include="Models\APIErrorData.cs" />
+    <Compile Include="Models\CustomDateRangeAttribute.cs" />
     <Compile Include="Models\CustomHTMLHelpers.cs" />
-    <Compile Include="Models\Helpers\HHelper.cs" />
     <Compile Include="Models\LoginData.cs" />
-    <Compile Include="Models\ViewModels\CreateHouseholdViewModel.cs" />
-    <Compile Include="Models\ViewModels\HouseholdViewModel.cs" />
-    <Compile Include="Models\ViewModels\InviteViewModel.cs" />
-    <Compile Include="Models\ViewModels\JoinViewModel.cs" />
-    <Compile Include="Models\ViewModels\ParticipantViewModel.cs" />
+    <Compile Include="Models\ViewModels\BankAccount\BankAccountsViewModel.cs" />
+    <Compile Include="Models\ViewModels\BankAccount\BankAccountViewModel.cs" />
+    <Compile Include="Models\ViewModels\Category\CategoriesForTransactionViewModel.cs" />
+    <Compile Include="Models\ViewModels\Category\CategoriesViewModel.cs" />
+    <Compile Include="Models\ViewModels\Category\CategoryViewModel.cs" />
+    <Compile Include="Models\ViewModels\BankAccount\CreateEditBAViewModel.cs" />
+    <Compile Include="Models\ViewModels\Category\CreateEditCategoryViewModel.cs" />
+    <Compile Include="Models\ViewModels\Transaction\CreateEditTransactionViewModel.cs" />
+    <Compile Include="Models\ViewModels\Household\CreateHouseholdViewModel.cs" />
+    <Compile Include="Models\ViewModels\Household\HouseholdDetailsViewModel.cs" />
+    <Compile Include="Models\ViewModels\Household\HouseholdViewModel.cs" />
+    <Compile Include="Models\ViewModels\Household\InviteViewModel.cs" />
+    <Compile Include="Models\ViewModels\Household\JoinViewModel.cs" />
+    <Compile Include="Models\ViewModels\Household\ParticipantViewModel.cs" />
+    <Compile Include="Models\ViewModels\Transaction\TransactionsViewModel.cs" />
+    <Compile Include="Models\ViewModels\Transaction\TransactionViewModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -176,7 +190,10 @@
     <Content Include="js\todolist.js" />
     <Content Include="js\tooltips.js" />
     <Content Include="Scripts\scriptAction.js" />
+    <Content Include="Scripts\scriptActionDelete.js" />
     <Content Include="Scripts\scriptActionJoin.js" />
+    <Content Include="Scripts\scriptActionUpdate.js" />
+    <Content Include="Scripts\scriptActionVoid.js" />
     <Content Include="vendor1\css\bootstrap.css" />
     <Content Include="vendor1\css\demo-page.css" />
     <Content Include="vendor1\css\examples.css" />
@@ -383,6 +400,16 @@
     <Content Include="Views\Household\InvitingHouseholds.cshtml" />
     <Content Include="Views\Shared\ErrorAccount.cshtml" />
     <Content Include="Views\Account\ForgotPasswordConfirmation.cshtml" />
+    <Content Include="Views\Category\Create.cshtml" />
+    <Content Include="Views\Category\GetCategories.cshtml" />
+    <Content Include="Views\Household\GetHouseholdDetails.cshtml" />
+    <Content Include="Views\Category\Edit.cshtml" />
+    <Content Include="Views\BankAccount\Create.cshtml" />
+    <Content Include="Views\BankAccount\Edit.cshtml" />
+    <Content Include="Views\BankAccount\GetBankAccounts.cshtml" />
+    <Content Include="Views\Transaction\Create.cshtml" />
+    <Content Include="Views\Transaction\Edit.cshtml" />
+    <Content Include="Views\Transaction\GetTransactions.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

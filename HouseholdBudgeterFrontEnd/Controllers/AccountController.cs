@@ -20,6 +20,7 @@ namespace HouseholdBudgeterFrontEnd.Controllers
         }
 
         [HttpPost]
+        [CheckModelState]
         public ActionResult Login(LoginViewModel model)
         {
             var httpClient = new HttpClient();
@@ -53,6 +54,7 @@ namespace HouseholdBudgeterFrontEnd.Controllers
             if (Request.Cookies["HBFrontEnd"] != null)
             {
                 var cookie = new HttpCookie("HBFrontEnd");
+
                 cookie.Expires = DateTime.Now.AddDays(-1);
                 Response.Cookies.Add(cookie);
             };
@@ -71,8 +73,8 @@ namespace HouseholdBudgeterFrontEnd.Controllers
         public ActionResult Register(RegisterViewModel model)
         {
             var httpClient = new HttpClient();
-
             var parameters = new List<KeyValuePair<string, string>>();
+
             parameters.Add(new KeyValuePair<string, string>("email", model.Email));
             parameters.Add(new KeyValuePair<string, string>("password", model.Password));
             parameters.Add(new KeyValuePair<string, string>("confirmPassword", model.ConfirmPassword));
@@ -95,12 +97,12 @@ namespace HouseholdBudgeterFrontEnd.Controllers
         public ActionResult ForgotPassword(ForgotPasswordViewModel model)
         {
             var httpClient = new HttpClient();
-            var localhost = HttpContext.Request.Url.GetLeftPart(UriPartial.Authority);
+            var frontUrl = Request.Url.GetLeftPart(UriPartial.Authority) + Url.Action("ResetPassword");
             var parameters = new List<KeyValuePair<string, string>>();
             parameters.Add(new KeyValuePair<string, string>("email", model.Email));
 
             var encodedValues = new FormUrlEncodedContent(parameters);
-            var response = httpClient.PostAsync(url + $"ForgotPassword?localhost={localhost}", encodedValues).Result;
+            var response = httpClient.PostAsync(url + $"ForgotPassword?frontUrl={frontUrl}", encodedValues).Result;
  
             return CheckError(response, "ForgotPasswordConfirmation");
         }
@@ -114,8 +116,7 @@ namespace HouseholdBudgeterFrontEnd.Controllers
         {
             if (code == null)
             {
-                ModelState.AddModelError(string.Empty,
-                    "Try again");
+                ModelState.AddModelError(string.Empty, "Try again");
             }
             return View();
         }
@@ -175,7 +176,7 @@ namespace HouseholdBudgeterFrontEnd.Controllers
             {
                 var data = response.Content.ReadAsStringAsync().Result;
                 var result = JsonConvert.DeserializeObject<APIErrorData>(data);
-                var modelErrors = result.ModelState.SingleOrDefault(p => p.Key == "").Value;
+                var modelErrors = result.ModelState.SingleOrDefault().Value;
 
                 if(modelErrors != null && modelErrors.Any())
                     foreach (var error in modelErrors)
