@@ -2,7 +2,6 @@
 @{
     ViewBag.Title = "Transactions of Bank Account ";
 }
-<hr />
 @if (ViewBag.Error != null)
 {
     <div class="card" style="text-align:center">
@@ -11,13 +10,21 @@
         </div>
     </div>
 }
-<br />
-
-<h4>@ViewBag.Title @Model.BankAccountName</h4>
-<hr />
+@if (ViewBag.Message != null)
+{
+    <div class="card" style="text-align:center">
+        <div class="card-body">
+            <h4 style="color:lawngreen">@ViewBag.Message</h4>
+        </div>
+    </div>
+}
 @if (Model != null)
 {
-    <a href="@Url.Action("Create","Transaction", new {id = Model.BankAccountId })" class="btn btn-dark">Create</a>
+    <br />
+    <hr />
+    <h3>@ViewBag.Title <span style="font-size: 1.5em">@Model.BankAccountName</span></h3>
+    <hr />
+    <a href="@Url.Action("Create","Transaction", new {id = Model.BankAccountId })" class="custom-btn">Create</a>
     <br />
     <br />
     <table id="table_id" class="table-striped table-bordered compact" style="width:100%">
@@ -29,6 +36,7 @@
                 <th>Created</th>
                 <th>Updated</th>
                 <th>Ammount</th>
+                <th>Transaction Date</th>
                 <th>Void</th>
                 <th>Voided</th>
                 <th>Edit</th>
@@ -40,7 +48,7 @@
             {
                 foreach (var transaction in Model.Transactions)
                 {
-                    <tr>
+                    <tr class="text-center">
                         <td>@transaction.Id</td>
                         <td>@transaction.Title</td>
                         <td>@transaction.Description</td>
@@ -52,23 +60,22 @@
                             }
                         </td>
                         <td>@transaction.Ammount</td>
+                        <td>@transaction.TransactionDate.ToString("dd-MM-yyyy HH:mm")</td>
                         <td>
                             @if (!transaction.Voided)
                             {
-                                <div class="justify-content-around flex-b">
-                                    <form method="post" action="@Url.Action("VoidTransaction", "Transaction", new { id = transaction.Id, bankAccountId = Model.BankAccountId })">
-                                        <a href="#" title="Void Transaction" class="actionVoid">
-                                            <i class="ti-upload"></i>
-                                        </a>
-                                    </form>
-                                </div>
+                                using (Html.BeginForm("VoidTransaction", "Transaction", new { id = transaction.Id, bankAccountId = Model.BankAccountId, transactionName = transaction.Title }))
+                                {
+                                    <button type="submit" class="fa fa-exclamation fa-lg"
+                                            onclick="return confirm('Are you sure you want to void transaction: @transaction.Title ?');" />
+                                }
                             }
                         </td>
                         <td>
                             @if (transaction.Voided && transaction.CanEdit)
                             {
                                 <div class="justify-content-around flex-b">
-                                    X
+                                    <i class="fa fa-exclamation-circle fa-lg" style="color:red"></i>
                                 </div>
                             }
                         </td>
@@ -77,7 +84,7 @@
                             {
                                 <div class="justify-content-around flex-b">
                                     <a title="Edit Transaction" href="@Url.Action("Edit", "Transaction", new { id = transaction.Id, bankAccountId = Model.BankAccountId })">
-                                        <i class="ti-pencil text-primary"></i>
+                                        <i class="fa fa-edit fa-lg"></i>
                                     </a>
                                 </div>
                             }
@@ -85,13 +92,11 @@
                         <td>
                             @if (transaction.CanEdit)
                             {
-                                <div class="justify-content-around flex-b">
-                                    <form method="post" action="@Url.Action("Delete", "Transaction", new { id = transaction.Id, bankAccountId = Model.BankAccountId })">
-                                        <a href="#" title="Delete Transaction" class="actionDelete">
-                                            <i class="ti-trash"></i>
-                                        </a>
-                                    </form>
-                                </div>
+                                using (Html.BeginForm("Delete", "Transaction", new { id = transaction.Id, bankAccountId = Model.BankAccountId }))
+                                {
+                                    <button type="submit" class="fa fa-trash fa-lg"
+                                            onclick="return confirm('Are you sure you want to delete transaction: @transaction.Title ?');" />
+                                }
                             }
                         </td>
                     </tr>
@@ -99,13 +104,14 @@
             }
     </table>
 }
-
+<br />
+<div>
+    @Html.ActionLink("Back to Households", "GetHouseholds", "Household", new { id = Model.BankAccountId }, new { @style = "padding: 5px; border-radius: 5px; background-color: lightgrey" })
+</div>
 @section scripts {
     <script type="text/javascript">
         $(document).ready(function () {
             $('#table_id').DataTable();
         });
     </script>
-    <script src="~/Scripts/scriptActionDelete.js" type="text/javascript"></script>
-    <script src="~/Scripts/scriptActionVoid.js" type="text/javascript"></script>
 }

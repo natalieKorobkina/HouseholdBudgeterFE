@@ -2,7 +2,6 @@
 @{
     ViewBag.Title = "Categories of household ";
 }
-<hr />
 @if (ViewBag.Error != null)
 {
     <div class="card" style="text-align:center">
@@ -12,14 +11,15 @@
     </div>
 }
 <br />
-<!--Show all categories of houswhold-->
-<h4>@ViewBag.Title @Model.HouseholdName</h4>
 <hr />
 @if (Model != null)
 {
+    <!--Show all categories of houswhold-->
+    <h3>@ViewBag.Title <span style="font-size: 1.5em">@Model.HouseholdName</span></h3>
+    <hr />
     if (Model.IsOwner)
     {
-        <a href="@Url.Action("Create","Category", new {id = Model.HouseholdId })" class="btn btn-dark">Create</a>
+        <a href="@Url.Action("Create","Category", new {id = Model.HouseholdId })" class="custom-btn">Create</a>
         <br />
     }
     <br />
@@ -56,7 +56,7 @@
                             {
                                 <div class="justify-content-around flex-b">
                                     <a title="Edit Household" href="@Url.Action("Edit", "Category", new { id = category.Id, householdId = Model.HouseholdId })">
-                                        <i class="ti-pencil text-primary"></i>
+                                        <i class="fa fa-edit fa-lg"></i>
                                     </a>
                                 </div>
                             }
@@ -64,13 +64,11 @@
                         <td>
                             @if (Model.IsOwner)
                             {
-                                <div class="justify-content-around flex-b">
-                                    <form method="post" action="@Url.Action("Delete", "Category", new { id = category.Id, householdId = Model.HouseholdId })">
-                                        <a href="#" title="Delete Category" class="actionDelete">
-                                            <i class="ti-trash"></i>
-                                        </a>
-                                    </form>
-                                </div>
+                                using (Html.BeginForm("Delete", "Category", new { id = category.Id, householdId = Model.HouseholdId }))
+                                {
+                                    <button type="submit" class="fa fa-trash fa-lg"
+                                            onclick="return confirm('Are you sure you want to delete category: @category.Name ?');" />
+                                }
                             }
                         </td>
                     </tr>
@@ -78,7 +76,10 @@
             }
     </table>
 }
-
+<br />
+<div>
+    @Html.ActionLink("Back to Households", "GetHouseholds", "Household", new { }, new { @style = "padding: 5px; border-radius: 5px; background-color: lightgrey" })
+</div>
 @section scripts {
     <script type="text/javascript">
         $(document).ready(function () {

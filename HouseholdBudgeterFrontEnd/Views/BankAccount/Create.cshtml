@@ -2,8 +2,6 @@
 @{
     ViewBag.Title = "Create New Bank Account";
 }
-
-<h2>@ViewBag.Title.</h2>
 @if (ViewBag.Error != null)
 {
     <div class="card" style="text-align:center">
@@ -12,6 +10,10 @@
         </div>
     </div>
 }
+<hr />
+<h2>@ViewBag.Title</h2>
+<br />
+<hr />
 @using (Html.BeginForm("Create", "BankAccount", FormMethod.Post, new { @class = "form-horizontal", role = "form" }))
 {
     @Html.AntiForgeryToken()

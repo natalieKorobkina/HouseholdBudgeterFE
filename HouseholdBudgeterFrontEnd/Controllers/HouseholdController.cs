@@ -43,7 +43,6 @@ namespace HouseholdBudgeterFrontEnd.Controllers
         public ActionResult Edit(int id)
         {
             var httpClient = HttpContext.Items["httpClient"] as HttpClient;
-
             var response = httpClient.GetAsync(url + $"GetHousehold/{id}").Result;
 
             if (response.IsSuccessStatusCode)
@@ -94,8 +93,9 @@ namespace HouseholdBudgeterFrontEnd.Controllers
         }
 
         [CheckAutorization]
-        public ActionResult GetHouseholdDetails(int id)
+        public ActionResult GetHouseholdDetails(int id, string householdName)
         {
+            ViewBag.Title = householdName;
             var httpClient = HttpContext.Items["httpClient"] as HttpClient;
             var response = httpClient.GetAsync(url + $"GetHouseholdDetails/{id}").Result;
 
@@ -230,7 +230,7 @@ namespace HouseholdBudgeterFrontEnd.Controllers
         public ActionResult CheckStatusCode(HttpResponseMessage response, string actionName)
         {
             if (response.IsSuccessStatusCode)
-                return RedirectToAction(actionName);
+                return RedirectToAction("GetHouseholds");
             else
                 return CheckError(response);
         }

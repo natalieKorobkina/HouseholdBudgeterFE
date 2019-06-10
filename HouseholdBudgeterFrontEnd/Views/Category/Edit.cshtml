@@ -2,8 +2,6 @@
 @{
     ViewBag.Title = "Edit Category";
 }
-
-<h2>@ViewBag.Title.</h2>
 @if (ViewBag.Error != null)
 {
     <div class="card" style="text-align:center">
@@ -12,6 +10,10 @@
         </div>
     </div>
 }
+<hr />
+<h2>@ViewBag.Title</h2>
+<br />
+<hr />
 @using (Html.BeginForm("Edit", "Category", FormMethod.Post, new { @class = "form-horizontal", role = "form", }))
 {
     @Html.AntiForgeryToken()

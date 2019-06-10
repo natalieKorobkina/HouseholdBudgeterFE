@@ -2,8 +2,6 @@
 @{
     ViewBag.Title = "Create new Household";
 }
-
-<h2>@ViewBag.Title.</h2>
 @if (ViewBag.Error != null)
 {
     <div class="card" style="text-align:center">
@@ -12,6 +10,10 @@
         </div>
     </div>
 }
+<hr />
+<h2>@ViewBag.Title</h2>
+<br />
+<hr />
 @using (Html.BeginForm("Create", "Household", FormMethod.Post, new { @class = "form-horizontal", role = "form" }))
 {
     @Html.AntiForgeryToken()
@@ -28,6 +30,7 @@
             @Html.TextBoxFor(m => m.Description, new { @class = "form-control" })
         </div>
     </div>
+    <br />
     <div class="form-group">
         <div class="col-md-offset-2 col-md-10">
             <input type="submit" value="Create Household" class="btn btn-dark" />

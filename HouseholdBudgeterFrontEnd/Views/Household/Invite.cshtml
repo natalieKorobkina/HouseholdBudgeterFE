@@ -2,8 +2,6 @@
 @{
     ViewBag.Title = "Invite a user to the household";
 }
-
-<h3>@ViewBag.Title @Request.QueryString["householdName"]</h3>
 @if (ViewBag.Message != null)
 {
     <div class="card" style="text-align:center">
@@ -20,6 +18,10 @@
         </div>
     </div>
 }
+<br />
+<hr />
+<h3>@ViewBag.Title <span style="font-size: 1.5em">@Request.QueryString["householdName"]</span></h3>
+<hr />
 @using (Html.BeginForm("Invite", "Household", FormMethod.Post, new { @class = "form-horizontal", role = "form" }))
 {
     @Html.AntiForgeryToken()
@@ -38,8 +40,8 @@
     </div>
 }
 <br />
-<div class="container-login100-form-btn m-b-16">
-    @Html.ActionLink("Back to Households", "GetHouseholds", new { }, new { @class = "txt3" })
+<div>
+    @Html.ActionLink("Back to Households", "GetHouseholds", new { }, new { @style = "padding: 5px; border-radius: 5px; background-color: lightgrey" })
 </div>
 @section Scripts {
     @Scripts.Render("~/bundles/jqueryval")

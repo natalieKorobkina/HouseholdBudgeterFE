@@ -38,6 +38,7 @@ namespace HouseholdBudgeterFrontEnd.Controllers
                 var data = response.Content.ReadAsStringAsync().Result;
                 var result = JsonConvert.DeserializeObject<LoginData>(data);
                 var cookie = new HttpCookie("HBFrontEnd", result.AccessToken);
+                Session["UserName"] = model.Email;
 
                 Response.Cookies.Add(cookie);
                 return RedirectToAction(nameof(HomeController.Index), "Home");
@@ -147,6 +148,7 @@ namespace HouseholdBudgeterFrontEnd.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [CheckAutorization]
         [CheckModelState]
         public ActionResult ChangePassword(ChangePasswordViewModel model)
         { 
@@ -158,9 +160,6 @@ namespace HouseholdBudgeterFrontEnd.Controllers
             parameters.Add(new KeyValuePair<string, string>("confirmPassword", model.ConfirmPassword));
 
             var encodedValues = new FormUrlEncodedContent(parameters);
-
-            if (!CheckCookie(httpClient)) 
-                return RedirectToAction("Login");
 
             var response = httpClient.PostAsync(url + "ChangePassword", encodedValues).Result;
 
@@ -194,19 +193,6 @@ namespace HouseholdBudgeterFrontEnd.Controllers
             }
 
             return View("ErrorAccount");
-        }
-
-        public bool CheckCookie (HttpClient httpClient)
-        {
-            var cookie = Request.Cookies["HBFrontEnd"];
-
-            if (cookie == null)
-                return false;
-
-            var token = cookie.Value;
-            httpClient.DefaultRequestHeaders.Add("Authorization", $"Bearer {token}");
-
-            return true;
         }
     }
 }

@@ -2,7 +2,6 @@
 @{
     ViewBag.Title = "Create New Transaction";
 }
-<h2>@ViewBag.Title.</h2>
 @if (ViewBag.Error != null)
 {
     <div class="card" style="text-align:center">
@@ -11,6 +10,10 @@
         </div>
     </div>
 }
+<hr />
+<h2>@ViewBag.Title</h2>
+<br />
+<hr />
 @using (Html.BeginForm("Create", "Transaction", FormMethod.Post, new { @class = "form-horizontal", role = "form" }))
 {
     @Html.AntiForgeryToken()
@@ -36,22 +39,26 @@
     <div class="form-group">
         @Html.LabelFor(m => m.TransactionDate, new { @class = "col-md-2 control-label" })
         <div class="col-md-10">
-            @Html.EditorFor(m => m.TransactionDate, new { @class = "form-control" })
+            @Html.TextBoxFor(m => m.TransactionDate, new { @class = "form-control" })
         </div>
     </div>
-        <div class="form-group">
-            @Html.Label("Category", htmlAttributes: new { @class = "control-label col-md-2" })
-            <div class="col-md-5">
+    <div class="form-group">
+        @Html.Label("Category", htmlAttributes: new { @class = "control-label col-md-2" })
+        <div class="col-md-5">
+            @*@if (Model != null)
+            {*@
                 @Html.DropDownListFor(x => Model.CategoryId, new SelectList(Model.Categories, "Value", "Text"),
-               "-Select Category-", htmlAttributes: new { @class = "form-control", id = Model.CategoryId})
-            </div>
+                           htmlAttributes: new { @class = "form-control", id = Model.CategoryId})
+            @*}*@
+
         </div>
-        <div class="form-group">
-            <div class="col-md-offset-2 col-md-10">
-                <input type="submit" value="Create Transaction" class="btn btn-dark" />
-            </div>
+    </div>
+    <div class="form-group">
+        <div class="col-md-offset-2 col-md-10">
+            <input type="submit" value="Create Transaction" class="btn btn-dark" />
         </div>
-        }
-        @section Scripts {
-            @Scripts.Render("~/bundles/jqueryval")
-        }
+    </div>
+}
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+}

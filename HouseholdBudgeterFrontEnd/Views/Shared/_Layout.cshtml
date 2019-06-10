@@ -4,118 +4,135 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>@ViewBag.Title - Household Budgeter</title>
-    <link rel="stylesheet" type="text/css" href="~/vendor/bootstrap/css/bootstrap.min.css">
-    <link rel="stylesheet" type="text/css" href="~/fonts/font-awesome-4.7.0/css/font-awesome.min.css">
-    <link rel="stylesheet" type="text/css" href="~/vendor/animate/animate.css">
-    <link rel="stylesheet" type="text/css" href="~/vendor/css-hamburgers/hamburgers.min.css">
-    <link rel="stylesheet" type="text/css" href="~/vendor/animsition/css/animsition.min.css">
-    <link rel="stylesheet" type="text/css" href="~/vendor/select2/select2.min.css">
-    <link rel="stylesheet" type="text/css" href="~/vendor/daterangepicker/daterangepicker.css">
-    <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
-    <link rel="stylesheet" href="~/vendor/ti-icons/css/themify-icons.css">
-    <link rel="stylesheet" href="~/vendor/base/vendor.bundle.base.css">
-    <link rel="stylesheet" type="text/css" href="~/css/util.css">
-    <link rel="stylesheet" type="text/css" href="~/css/main.css">
-    <link rel="stylesheet" href="~/css/style.css">
+
+    <link href="~/css/bootstrap.css" rel="stylesheet" type="text/css" media="all">
+    <link href="~/css/style.css" rel="stylesheet" type="text/css" media="all" />
+    <link href="~/css/font-awesome.css" rel="stylesheet">
+    <link href='//fonts.googleapis.com/css?family=Carrois+Gothic' rel='stylesheet' type='text/css'>
+    <link href='//fonts.googleapis.com/css?family=Work+Sans:400,500,600' rel='stylesheet' type='text/css'>
+    <link rel="stylesheet" type="text/css" href="//cdn.datatables.net/1.10.19/css/jquery.dataTables.min.css" />
+
 </head>
 <body>
-    <div class="container-scroller">
-        <nav class="navbar col-lg-12 col-12 p-0 fixed-top d-flex flex-row">
-            <div class="text-center navbar-brand-wrapper d-flex align-items-center justify-content-center">
-                <div class="navbar-brand brand-logo mr-5" href="index.html">
+    <div class="page-container">
+        <div class="left-content">
+            <div class="mother-grid-inner">
+                <!--header start here-->
+                <div class="header-main">
+                    <div class="header-left" style="width:77%">
+                        <div class="logo-name">
+                            <img id="logo" src="~/images/house_PNG72.png" alt="Logo" />
+                        </div>
+                        <div class="logo-name" style="width:auto; margin: 14px;">
+                            @if (Request.Cookies["HBFrontEnd"] != null)
+                            {
+                                <a href="@Url.Action("GetHouseholds", "Household")" class="nav-link">
+                                    <h1><span>Household Budgeter</span></h1>
+                                </a>
+                            }
+                        </div>
+                        <div class="clearfix"> </div>
+                    </div>
+                    <div class="header-right">
+                        @if (!String.IsNullOrEmpty((string)(HttpContext.Current.Session["UserName"])) )
+                        {
+                        <div>Welcome @(HttpContext.Current.Session["UserName"])</div> 
+                        }
+                        <div class="clearfix"> </div>
+                    </div>
+                    <div class="clearfix"> </div>
                 </div>
+                <!--heder end here-->
+                <!--inner block start here-->
+                <div class="inner-block">
+                    @RenderBody()
+                </div>
+                <!--inner block end here-->
+                <!--copy rights start here-->
+                <div class="copyrights">
+                    <p>© 2019  Designed by  Natalie Korobkina </p>
+                </div>
+                <!--COPY rights end here-->
             </div>
-            <div class="navbar-menu-wrapper d-flex align-items-center justify-content-between">
-                <button class="navbar-toggler navbar-toggler align-self-center" type="button" data-toggle="minimize">
-                    <span class="ti-view-list"></span>
-                </button>
-                <ul class="navbar-nav mr-lg-2">
-                    <li class="nav-item nav-search d-none d-lg-block">
-                        Household Budgeter
-                    </li>
-                </ul>
-                <ul class="navbar-nav navbar-nav-right">
-                    <li class="nav-item nav-profile dropdown">
-                        @using (Html.BeginForm("LogOff", "Account", FormMethod.Post, new { id = "logoutForm", @class = "nav-link" }))
+        </div>
+        <!--slider menu-->
+        <div class="sidebar-menu">
+            <div class="logo">
+                <a href="#" class="sidebar-icon"> <span class="fa fa-bars"></span> </a> <a href="#">
+                    <span id="logo"></span>
+                    <!--<img id="logo" src="" alt="Logo"/>-->
+                </a>
+            </div>
+            <div class="menu">
+                <ul id="menu">
+                    @if (Request.Cookies["HBFrontEnd"] != null)
+                    {
+                        <li id="menu-home">
+                            <a href="@Url.Action("GetHouseholds", "Household")">
+                                <i class="fa fa-home"></i><span> Your Households</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="@Url.Action("Create", "Household")">
+                                <i class="fa fa-book"></i><span>Create Household</span>
+                            </a>
+                        </li>
+                        <li id="menu-comunicacao">
+                            <a href="@Url.Action("InvitingHouseholds", "Household")">
+                                <i class="fa fa-cogs"></i><span>Join Household</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="@Url.Action("ChangePassword", "Account")">
+                                <i class="fa fa-cog"></i><span>Change Password</span>
+                            </a>
+                        </li>
+                    }
+                    <li>
+                        @using (Html.BeginForm("LogOff", "Account", FormMethod.Post, new { id = "logoutForm"}))
                         {
                             @Html.AntiForgeryToken()
-                            <a class="nav-link dropdown-toggle" href="javascript:document.getElementById('logoutForm').submit()"
-                               style="color:grey; border:2px solid lightgray; border-radius:20px; padding: 8px; background-color:lightgray">
-                                Log Off
+                            <a class="nav-link dropdown-toggle" href="javascript:document.getElementById('logoutForm').submit()">
+                                <i class="fa fa-sign-out"></i><span>Log Off</span>
                             </a>
                         }
                     </li>
                 </ul>
             </div>
-        </nav>
-        <div class="container-fluid page-body-wrapper">
-            <nav class="sidebar sidebar-offcanvas" id="sidebar">
-                <ul class="nav">
-                    @if (Request.Cookies["HBFrontEnd"] != null)
-                    {
-                        <li class="nav-item">
-                            <a class="nav-link" data-toggle="collapse" href="#households" aria-expanded="false" aria-controls="households">
-                                <i class="ti-file menu-icon"></i>
-                                <span class="menu-title">Households</span>
-                            </a>
-                            <div class="collapse" id="households">
-                                <ul class="nav flex-column sub-menu" style="list-style:none">
-                                    <li class="nav-item">
-                                        <a href="@Url.Action("Create", "Household")" class="nav-link">
-                                            <i class="ti-notepad menu-icon"></i>
-                                            <span class="menu-title">Create Household</span>
-                                        </a>
-                                    </li>
-                                    <li class="nav-item ">
-                                        <a href="@Url.Action("GetHouseholds", "Household")" class="nav-link">
-                                            <i class="ti-gallery menu-icon"></i>
-                                            <span class="menu-title">All Households</span>
-                                        </a>
-                                    </li>
-                                    <li class="nav-item ">
-                                        <a href="@Url.Action("InvitingHouseholds", "Household")" class="nav-link">
-                                            <i class="ti-pin-alt menu-icon"></i>
-                                            <span class="menu-title">Join Household</span>
-                                        </a>
-                                    </li>
-                                </ul>
-                            </div>
-                        </li>
-                        <li class="nav-item">
-                            <a href="@Url.Action("ChangePassword", "Account")" class="nav-link">
-                                <i class="ti-user menu-icon"></i>
-                                <span class="menu-title">Change Password</span>
-                            </a>
-                        </li>
-                    }
-                </ul>
-            </nav>
-            <div class="main-panel">
-                <div class="content-wrapper">
-                    <div class="row">
-                        <div class="col-md-12 grid-margin card">
-                            <div class="d-flex justify-content-between align-items-center">
-                                <div class="card-body">
-                                    @RenderBody()
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
         </div>
+        <div class="clearfix"> </div>
     </div>
 
-    <script src="~/vendor/base/vendor.bundle.base.js"></script>
-    <script src="~/vendor/chart.js/Chart.min.js"></script>
-    <script src="~/js/off-canvas.js"></script>
-    <script src="~/js/hoverable-collapse.js"></script>
-    <script src="~/js/template.js"></script>
-    <script src="~/js/todolist.js"></script>
-    <script src="~/js/dashboard.js"></script>
+    <script src="~/js/jquery-2.1.1.min.js"></script>
+    <script type="application/x-javascript">
+         addEventListener("load", function() { setTimeout(hideURLbar, 0); },
+        false); function hideURLbar(){ window.scrollTo(0,1); } </script>
+    <!--skycons-icons-->
+    <script src="~/js/skycons.js"></script>
+    <!--//skycons-icons-->
+    <script>
+        var toggle = true;
+        $(".sidebar-icon").click(function () {
+            if (toggle) {
+                $(".page-container").addClass("sidebar-collapsed").removeClass("sidebar-collapsed-back");
+                $("#menu span").css({ "position": "absolute" });
+            }
+            else {
+                $(".page-container").removeClass("sidebar-collapsed").addClass("sidebar-collapsed-back");
+                setTimeout(function () {
+                    $("#menu span").css({ "position": "relative" });
+                }, 400);
+            }
+            toggle = !toggle;
+        });
+    </script>
+    <script src="~/js/jquery.nicescroll.js"></script>
+    <script src="~/js/scripts.js"></script>
+    <script src="~/js/bootstrap.js"></script>
     <script src="//cdn.datatables.net/1.10.19/js/jquery.dataTables.min.js"></script>
-    <script src="//cdn.jsdelivr.net/npm/flatpickr"></script>
-
+    <script src="//ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js"></script>
+    <script src="//cdn.datatables.net/1.10.19/js/jquery.dataTables.min.js"></script>
     @RenderSection("scripts", required: false)
 </body>
 </html>

@@ -1,8 +1,4 @@
 ﻿@model List<HouseholdDetailsViewModel>
-@{
-    ViewBag.Title = "Household Details";
-}
-<hr />
 @if (ViewBag.Error != null)
 {
     <div class="card" style="text-align:center">
@@ -11,19 +7,59 @@
         </div>
     </div>
 }
-<!--Show all households-->
+<br />
+<hr />
 @if (Model != null && Model.Any())
 {
-    foreach (var bankAccount in Model)
-    {
-        <div>@bankAccount.BankAccountName : @bankAccount.BankAccountBalance</div>
-        <div>By category:</div>
-        foreach (var category in bankAccount.Categories)
-        {
-            <div>@category.CategoryName : @category.CategoryBalance</div>
-        }
-        <br />
-    }
+
+    <h3>Details per Bank Account of Household <span style="font-size: 1.5em">@ViewBag.Title</span></h3>
+    <hr />
+    <div class="inner-block">
+        <div class="price-block-main">
+            <div class="prices-head">
+            </div>
+            <div class="price-tables">
+                @foreach (var bankAccount in Model)
+                {
+                    <div class="col-md-4 price-grid">
+                        <div class="price-block">
+                            <div class="price-gd-top pric-clr2">
+                                <h4>@bankAccount.BankAccountName</h4>
+                                <h3>
+                                    <span class="per-month">Balance</span>
+                                    <span class="usa-dollar">$</span>@bankAccount.BankAccountBalance
+                                </h3>
+                            </div>
+                            <div class="price-gd-bottom">
+                                @if (bankAccount.Categories.Any())
+                                {
+                                    <div class="price-list">
+
+                                        <table class="display table-bordered" style="width:100%">
+                                            <thead>
+                                                <tr>
+                                                    <th class="text-center">Category</th>
+                                                    <th class="text-center">Sum</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                @foreach (var category in bankAccount.Categories)
+                                                {
+                                                    <tr>
+                                                        <td>@category.CategoryName</td>
+                                                        <td>@category.CategoryBalance</td>
+                                                    </tr>
+                                                }
+                                        </table>
+                                    </div>
+                                }
+                            </div>
+                        </div>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
 }
 
 @section scripts {

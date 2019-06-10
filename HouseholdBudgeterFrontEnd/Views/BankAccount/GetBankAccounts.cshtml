@@ -1,8 +1,7 @@
 ﻿@model BankAccountsViewModel
 @{
-    ViewBag.Title = "Bank Accounts of household ";
+    ViewBag.Title = "Bank Accounts of Household ";
 }
-<hr />
 @if (ViewBag.Error != null)
 {
     <div class="card" style="text-align:center">
@@ -11,15 +10,24 @@
         </div>
     </div>
 }
+@if (ViewBag.Message != null)
+{
+    <div class="card" style="text-align:center">
+        <div class="card-body">
+            <h4 style="color:lawngreen">@ViewBag.Message</h4>
+        </div>
+    </div>
+}
 <br />
-<!--Show all categories of houswhold-->
-<h4>@ViewBag.Title @Model.HouseholdName</h4>
 <hr />
 @if (Model != null)
 {
+    <!--Show all categories of houswhold-->
+    <h3>@ViewBag.Title <span style="font-size: 1.5em">@Model.HouseholdName</span></h3>
+    <hr />
     if (Model.IsOwner)
     {
-        <a href="@Url.Action("Create","BankAccount", new {id = Model.HouseholdId })" class="btn btn-dark">Create</a>
+        <a href="@Url.Action("Create","BankAccount", new {id = Model.HouseholdId })" class="custom-btn">Create</a>
         <br />
     }
     <br />
@@ -43,65 +51,64 @@
             {
                 foreach (var bankAccount in Model.BankAccounts)
                 {
-            <tr>
-                <td>@bankAccount.Id</td>
-                <td>@bankAccount.Name</td>
-                <td>@bankAccount.Description</td>
-                <td>
-                    <div class="justify-content-around flex-b">
-                        <a title="Edit Household" href="@Url.Action("GetTransactions", "Transaction", new { id = bankAccount.Id })">
-                            <i class="ti-alert text-primary"></i>
-                        </a>
-                    </div>
-                </td>
-                <td>@bankAccount.Created.ToString("dd-MM-yyyy HH:mm")</td>
-                <td>
-                    @if (bankAccount.Updated != null)
-                    {
-                        @bankAccount.Updated.Value.ToString("dd-MM-yyyy HH:mm")
-                    }
-                </td>
-                <td>@bankAccount.Balance</td>
-                <td>
-                    @if (Model.IsOwner)
-                    {
-                        <div class="justify-content-around flex-b">
-                            <form method="post" action="@Url.Action("UpdateBalance", "BankAccount", new { id = bankAccount.Id, householdId = Model.HouseholdId })">
-                                <a href="#" title="Update Bank Account Balance" class="actionUpdate">
-                                    <i class="ti-upload"></i>
+                    <tr class="text-center">
+                        <td>@bankAccount.Id</td>
+                        <td>@bankAccount.Name</td>
+                        <td>@bankAccount.Description</td>
+                        <td class="text-center">
+                            <div class="justify-content-around flex-b">
+                                <a title="Edit Household" href="@Url.Action("GetTransactions", "Transaction", new { id = bankAccount.Id })">
+                                    <i class="fa fa-dollar fa-lg"></i>
                                 </a>
-                            </form>
-                        </div>
-                    }
-                </td>
-                <td>
-                    @if (Model.IsOwner)
-                    {
-                        <div class="justify-content-around flex-b">
-                            <a title="Edit Household" href="@Url.Action("Edit", "BankAccount", new { id = bankAccount.Id, householdId = Model.HouseholdId })">
-                                <i class="ti-pencil text-primary"></i>
-                            </a>
-                        </div>
-                    }
-                </td>
-                <td>
-                    @if (Model.IsOwner)
-                    {
-                        <div class="justify-content-around flex-b">
-                            <form method="post" action="@Url.Action("Delete", "BankAccount", new { id = bankAccount.Id, householdId = Model.HouseholdId })">
-                                <a href="#" title="Delete Bank Account" class="actionDelete">
-                                    <i class="ti-trash"></i>
-                                </a>
-                            </form>
-                        </div>
-                    }
-                </td>
-            </tr>
+                            </div>
+                        </td>
+                        <td>@bankAccount.Created.ToString("dd-MM-yyyy HH:mm")</td>
+                        <td>
+                            @if (bankAccount.Updated != null)
+                            {
+                                @bankAccount.Updated.Value.ToString("dd-MM-yyyy HH:mm")
+                            }
+                        </td>
+                        <td>@bankAccount.Balance</td>
+                        <td>
+                            @if (Model.IsOwner)
+                            {
+                                using (Html.BeginForm("UpdateBalance", "BankAccount", new { id = bankAccount.Id, householdId = Model.HouseholdId, bankAccountName = bankAccount.Name }))
+                                {
+                                    <button type="submit" class="fa fa-refresh fa-lg"
+                                            onclick="return confirm('Are you sure you want to update balance of bank account: @bankAccount.Name ?');" />
+                                }
+                            }
+                        </td>
+                        <td>
+                            @if (Model.IsOwner)
+                            {
+                                <div class="justify-content-around flex-b">
+                                    <a title="Edit Household" href="@Url.Action("Edit", "BankAccount", new { id = bankAccount.Id, householdId = Model.HouseholdId })">
+                                        <i class="fa fa-edit fa-lg"></i>
+                                    </a>
+                                </div>
+                            }
+                        </td>
+                        <td>
+                            @if (Model.IsOwner)
+                            {
+                                using (Html.BeginForm("Delete", "BankAccount", new { id = bankAccount.Id, householdId = Model.HouseholdId }))
+                                {
+                                    <button type="submit" class="fa fa-trash fa-lg"
+                                            onclick="return confirm('Are you sure you want to delete bank account: @bankAccount.Name ?');" />
+                                }
+                            }
+                        </td>
+                    </tr>
                 }
             }
     </table>
 }
-
+<br />
+<div class="container-login100-form-btn m-b-16">
+    @Html.ActionLink("Back to Households", "GetHouseholds", "Household", new { }, new { @style = "padding: 5px; border-radius: 5px; background-color: lightgrey" })
+</div>
 @section scripts {
     <script type="text/javascript">
         $(document).ready(function () {

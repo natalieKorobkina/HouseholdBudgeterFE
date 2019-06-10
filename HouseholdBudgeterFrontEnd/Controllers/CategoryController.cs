@@ -53,7 +53,7 @@ namespace HouseholdBudgeterFrontEnd.Controllers
                 return View(result);
             }
 
-            return CheckError(response, householdId);
+            return CheckError(response);
         }
 
         [HttpPost]
@@ -117,19 +117,30 @@ namespace HouseholdBudgeterFrontEnd.Controllers
             if (response.IsSuccessStatusCode)
                 return RedirectToAction("GetCategories", new { id = householdId });
             else
-                return CheckError(response, householdId);
+                return CheckError(response);
         }
 
-        public ActionResult CheckError(HttpResponseMessage response, int householdId)
+        public ActionResult CheckError(HttpResponseMessage response)
         {
             if (response.StatusCode == System.Net.HttpStatusCode.BadRequest)
             {
                 var data = response.Content.ReadAsStringAsync().Result;
                 var result = JsonConvert.DeserializeObject<APIErrorData>(data);
                 string messageError = result.Message;
-                TempData["Error"] = messageError;
+                if (result.ModelState != null)
+                {
+                    var modelErrors = result.ModelState.SingleOrDefault().Value;
+                    foreach (var error in modelErrors)
+                        ModelState.AddModelError("", error);
+                    return View();
+                }
+                else
+                {
+                    messageError = result.Message;
+                    TempData["Error"] = messageError;
 
-                return RedirectToAction("GetCategories", new { id = householdId });
+                    return RedirectToAction("GetHouseholds", "Household");
+                }
             }
 
             return View("Error");

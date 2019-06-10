@@ -2,7 +2,6 @@
 @{
     ViewBag.Title = "Your households";
 }
-<hr />
 @if (ViewBag.Error != null)
 {
     <div class="card" style="text-align:center">
@@ -11,22 +10,22 @@
         </div>
     </div>
 }
+<hr />
 <!--Show all households-->
 @if (Model != null || Model.Any())
 {
-    <table id="table_id" class="table-striped table-bordered compact" style="width:100%">
+    <table id="table_id" class="display table-bordered compact" style="width:100%">
         <thead>
             <tr>
-                <th>Id</th>
+                <th>Info</th>
                 <th>Name</th>
-                <th>Description</th>
                 <th>Categories</th>
                 <th>Bank Accounts</th>
                 <th>Created</th>
                 <th>Updated</th>
                 <th>Edit</th>
-                <th>View Users</th>
-                <th>Invite User</th>
+                <th>Users</th>
+                <th>Invite</th>
                 <th>Leave</th>
                 <th>Delete</th>
             </tr>
@@ -34,88 +33,82 @@
         <tbody>
             @foreach (var household in Model)
             {
-            <tr>
-                <td>
-                    @household.Id
-                                <a title="Details" href="@Url.Action("GetHouseholdDetails", "Household", new { id = household.Id })">
-                                    <i class="ti-info text-primary"></i>
-                                </a>
-                            </td>
-                <td>@household.Name</td>
-                <td>@household.Description</td>
-                <td>
-                    <div class="justify-content-around flex-b">
-                        <a title="See Categories" href="@Url.Action("GetCategories", "Category", new { id = household.Id })">
-                            <i class="ti-files text-primary"></i>
+                <tr class="text-center">
+                    <td class="text-center">
+                        <a title="Details" href="@Url.Action("GetHouseholdDetails", "Household", new { id = household.Id, householdName = household.Name }) ">
+                             <i class="fa fa-info-circle fa-lg"></i>
                         </a>
-                    </div>
-                </td>
-                <td>
-                    <div class="justify-content-around flex-b">
-                        <a title="See Bank Accounts" href="@Url.Action("GetBankAccounts", "BankAccount", new { id = household.Id})">
-                            <i class="ti-files text-primary"></i>
-                        </a>
-                    </div>
-                </td>
-                <td>@household.Created.ToString("dd-MM-yyyy HH:mm")</td>
-                <td>
-                    @if (household.Updated != null)
-                    {
-                        @household.Updated.Value.ToString("dd-MM-yyyy HH:mm")
-                    }
-                </td>
-                <td>
-                    @if (household.IsOwner)
-                    {
+                    </td>
+                    <td>@household.Name</td>
+                    <td>
                         <div class="justify-content-around flex-b">
-                            <a title="Edit Household" href="@Url.Action("Edit", "Household", new { id = household.Id })">
-                                <i class="ti-pencil text-primary"></i>
+                            <a title="See Categories" href="@Url.Action("GetCategories", "Category", new { id = household.Id })">
+                                <i class="fa fa-clipboard fa-lg"></i>
                             </a>
                         </div>
-                    }
-                </td>
-                <td>
-                    <div class="justify-content-around flex-b">
-                        <a title="See All Members" href="@Url.Action("GetUsers", "Household", new { id = household.Id, householdName = household.Name})">
-                            <i class="ti-id-badge text-primary"></i>
-                        </a>
-                    </div>
-                </td>
-                <td>
-                    @if (household.IsOwner)
-                    {
+                    </td>
+                    <td>
                         <div class="justify-content-around flex-b">
-                            <a title="Invite Users To Household" href="@Url.Action("Invite", "Household", new { id = household.Id, householdName = household.Name })">
-                                <i class="ti-gift text-primary"></i>
+                            <a title="See Bank Accounts" href="@Url.Action("GetBankAccounts", "BankAccount", new { id = household.Id})">
+                                <i class="fa fa-money fa-lg"></i>
                             </a>
                         </div>
-                    }
-                </td>
-                <td>
-                    @if (!household.IsOwner)
-                    {
-                        <div class="justify-content-around flex-b">
-                            <form method="post" action="@Url.Action("Leave", "Household", new { id = household.Id })">
-                                <a href="#" title="Leave Household" class="actionLeave">
-                                    <i class="ti-unlink"></i>
+                    </td>
+                    <td>@household.Created.ToString("dd-MM-yyyy HH:mm")</td>
+                    <td>
+                        @if (household.Updated != null)
+                        {
+                            @household.Updated.Value.ToString("dd-MM-yyyy HH:mm")
+                        }
+                    </td>
+                    <td>
+                        @if (household.IsOwner)
+                        {
+                            <div class="justify-content-around flex-b">
+                                <a title="Edit Household" href="@Url.Action("Edit", "Household", new { id = household.Id })">
+                                    <i class="fa fa-edit fa-lg"></i>
                                 </a>
-                            </form>
-                        </div>
-                    }
-                </td>
-                <td>
-                    @if (household.IsOwner)
-                    {
+                            </div>
+                        }
+                    </td>
+                    <td>
                         <div class="justify-content-around flex-b">
-                            <form method="post" action="@Url.Action("Delete", "Household", new { id = household.Id })">
-                                <a href="#" title="Delete Household" class="actionDelete">
-                                    <i class="ti-trash"></i>
-                                </a>
-                            </form>
+                            <a title="See All Members" href="@Url.Action("GetUsers", "Household", new { id = household.Id, householdName = household.Name})">
+                                <i class="fa fa-users fa-lg"></i>
+                            </a>
                         </div>
-                    }
-                </td>
-            </tr>
+                    </td>
+                    <td>
+                        @if (household.IsOwner)
+                        {
+                            <div class="justify-content-around flex-b">
+                                <a title="Invite Users To Household" href="@Url.Action("Invite", "Household", new { id = household.Id, householdName = household.Name })">
+                                    <i class="fa fa-gift fa-lg"></i>
+                                </a>
+                            </div>
+                        }
+                    </td>
+                    <td>
+                        @if (!household.IsOwner)
+                        {
+                            using (Html.BeginForm("Leave", "Household", new { id = household.Id }))
+                            {
+                                <button type="submit" class="fa fa-unlink fa-lg"
+                                    onclick="return confirm('Are you sure you want to leave household: @household.Name ?');" />
+                            }
+                        }
+                    </td>
+                    <td>
+                        @if (household.IsOwner)
+                        {
+                            using (Html.BeginForm("Delete", "Household", new { id = household.Id }))
+                            {
+                                <button type="submit" class="fa fa-trash fa-lg" 
+                                    onclick="return confirm('Are you sure you want to delete household: @household.Name ?');" />
+                            }
+                        }
+                    </td>
+                </tr>
             }
     </table>
 }
@@ -126,6 +119,4 @@
             $('#table_id').DataTable();
         });
     </script>
-    <script src="~/Scripts/scriptAction.js" type="text/javascript"></script>
-    <script src="~/Scripts/scriptActionDelete.js" type="text/javascript"></script>
 }

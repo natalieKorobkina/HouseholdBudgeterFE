@@ -2,7 +2,6 @@
 @{
     ViewBag.Title = "Your households";
 }
-
 <hr />
 @if (ViewBag.Error != null)
 {
@@ -15,7 +14,7 @@
 <!--Show households in which user was invited-->
 @if (Model != null || Model.Any())
 {
-    <table id="table_id" class="table-striped table-bordered compact" style="width:100%">
+    <table id="table_id" class="display table-bordered" style="width:100%">
         <thead>
             <tr>
                 <th>Id</th>
@@ -40,13 +39,14 @@
                             @household.Updated.Value.ToString("dd-MM-yyyy HH:mm")
                         }
                     </td>
-                    <td>
+                    <td class="text-center">
                         @if (!household.IsOwner)
                         {
                             <div class="justify-content-around flex-b">
                                 <form method="post" action="@Url.Action("InvitingHouseholds", "Household", new { id = household.Id })">
                                     <a href="#" title="Join Household" style="color:black" class="actionJoin">
-                                        <i class="ti-link"></i> </a>
+                                        <i class=" fa fa-link fa-lg"></i>
+                                    </a>
                                 </form>
                             </div>
                         }
@@ -55,7 +55,10 @@
             }
     </table>
 }
-
+<br />
+<div class="container-login100-form-btn m-b-16">
+    @Html.ActionLink("Back to Households", "GetHouseholds", "Household", new { @style = "padding: 5px; border-radius: 5px; background-color: lightgrey" })
+</div>
 @section scripts {
     <script type="text/javascript">
         $(document).ready(function () {
