@@ -62,7 +62,7 @@
                         <td>@transaction.Ammount</td>
                         <td>@transaction.TransactionDate.ToString("dd-MM-yyyy HH:mm")</td>
                         <td>
-                            @if (!transaction.Voided)
+                            @if (!transaction.Voided && transaction.CanEdit)
                             {
                                 using (Html.BeginForm("VoidTransaction", "Transaction", new { id = transaction.Id, bankAccountId = Model.BankAccountId, transactionName = transaction.Title }))
                                 {
@@ -72,7 +72,7 @@
                             }
                         </td>
                         <td>
-                            @if (transaction.Voided && transaction.CanEdit)
+                            @if (transaction.Voided)
                             {
                                 <div class="justify-content-around flex-b">
                                     <i class="fa fa-exclamation-circle fa-lg" style="color:red"></i>
@@ -106,7 +106,7 @@
 }
 <br />
 <div>
-    @Html.ActionLink("Back to Households", "GetHouseholds", "Household", new { id = Model.BankAccountId }, new { @style = "padding: 5px; border-radius: 5px; background-color: lightgrey" })
+    @Html.ActionLink("Back to Bank Accounts", "GetBankAccounts", "BankAccount", new { id = Model.HouseholdId }, new { @style = "padding: 5px; border-radius: 5px; background-color: lightgrey" })
 </div>
 @section scripts {
     <script type="text/javascript">

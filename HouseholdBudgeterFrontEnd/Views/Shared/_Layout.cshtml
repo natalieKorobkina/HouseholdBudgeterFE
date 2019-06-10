@@ -34,9 +34,9 @@
                         <div class="clearfix"> </div>
                     </div>
                     <div class="header-right">
-                        @if (!String.IsNullOrEmpty((string)(HttpContext.Current.Session["UserName"])) )
+                        @if (Request.Cookies["HBFrontEnd"]["userName"] != null )
                         {
-                        <div>Welcome @(HttpContext.Current.Session["UserName"])</div> 
+                        <div>Wellcome @Request.Cookies["HBFrontEnd"]["UserName"]</div> 
                         }
                         <div class="clearfix"> </div>
                     </div>

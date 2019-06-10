@@ -20,7 +20,7 @@ namespace HouseholdBudgeterFrontEnd.Models.ActionFilters
                     { "controller", "Account" }, { "action", "Login" } });
             else
             {
-                var token = cookie.Value;
+                var token = cookie["token"];
                 httpClient.DefaultRequestHeaders.Add("Authorization", $"Bearer {token}");
                 filterContext.HttpContext.Items["httpClient"] = httpClient;
             }

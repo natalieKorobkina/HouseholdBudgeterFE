@@ -37,10 +37,11 @@ namespace HouseholdBudgeterFrontEnd.Controllers
             {
                 var data = response.Content.ReadAsStringAsync().Result;
                 var result = JsonConvert.DeserializeObject<LoginData>(data);
-                var cookie = new HttpCookie("HBFrontEnd", result.AccessToken);
-                Session["UserName"] = model.Email;
-
+                var cookie = new HttpCookie("HBFrontEnd");
+                cookie.Values.Add("token", result.AccessToken);
+                cookie.Values.Add("username", model.Email);
                 Response.Cookies.Add(cookie);
+
                 return RedirectToAction(nameof(HomeController.Index), "Home");
             }
 
