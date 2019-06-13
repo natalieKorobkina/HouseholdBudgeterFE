@@ -37,6 +37,7 @@
                 <th>Updated</th>
                 <th>Ammount</th>
                 <th>Transaction Date</th>
+                <th>Category</th>
                 <th>Void</th>
                 <th>Voided</th>
                 <th>Edit</th>
@@ -61,6 +62,7 @@
                         </td>
                         <td>@transaction.Ammount</td>
                         <td>@transaction.TransactionDate.ToString("dd-MM-yyyy HH:mm")</td>
+                        <td>@transaction.CategoryName</td>
                         <td>
                             @if (!transaction.Voided && transaction.CanEdit)
                             {

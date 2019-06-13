@@ -93,9 +93,11 @@ namespace HouseholdBudgeterFrontEnd.Controllers
         }
 
         [CheckAutorization]
-        public ActionResult GetHouseholdDetails(int id, string householdName)
+        public ActionResult GetHouseholdDetails(int id, string householdName, string description)
         {
             ViewBag.Title = householdName;
+            ViewBag.Description = description;
+
             var httpClient = HttpContext.Items["httpClient"] as HttpClient;
             var response = httpClient.GetAsync(url + $"GetHouseholdDetails/{id}").Result;
 

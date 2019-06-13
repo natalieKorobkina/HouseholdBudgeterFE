@@ -20,6 +20,5 @@ namespace HouseholdBudgeterFrontEnd.Models.ActionFilters
                     TempData = filterContext.Controller.TempData
                 };
         }
-
     }
 }

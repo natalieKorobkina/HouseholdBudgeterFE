@@ -14,6 +14,7 @@ namespace HouseholdBudgeterFrontEnd.Models.ViewModels
         public DateTime Created { get; set; }
         public DateTime? Updated { get; set; }
         public decimal Ammount { get; set; }
+        public string CategoryName { get; set; }
         public bool Voided { get; set; }
 
         public bool CanEdit { get; set; }
