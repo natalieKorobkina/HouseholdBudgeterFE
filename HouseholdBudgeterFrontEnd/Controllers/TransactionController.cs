@@ -171,11 +171,11 @@ namespace HouseholdBudgeterFrontEnd.Controllers
             {
                 var data = response.Content.ReadAsStringAsync().Result;
                 var result = JsonConvert.DeserializeObject<APIErrorData>(data);
-                string messageError = result.Message;
 
                 if ((result.ModelState != null) && (model != null))
                 {
                     var modelErrors = result.ModelState.SingleOrDefault().Value;
+
                     foreach (var error in modelErrors)
                         ModelState.AddModelError("", error);
 
@@ -183,8 +183,7 @@ namespace HouseholdBudgeterFrontEnd.Controllers
                 }
                 else
                 {
-                    messageError = result.Message;
-                    TempData["Error"] = messageError;
+                    TempData["Error"] = result.Message;
 
                     return RedirectToAction("GetHouseholds", "Household");
                 }
