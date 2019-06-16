@@ -6,7 +6,7 @@ Used Web technologies:
 
 Household Budgeter Application. Part 2 - Front-End Application.
 
-Second part of the Enterprise Application with the focus on managing and displaying Household financial data by interacting with a REST Service. 
+Second part of the Enterprise Application with the focus on managing and displaying Household financial data by interacting with a REST Service. Featured consumption JSON Web API data, sending data to Web API and handling errors’ notification based on received data.
 
 Install
 
